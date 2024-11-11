@@ -62,7 +62,7 @@ class Victim(models.Model):
     
 class AidPackage(models.Model):
     packageID = models.AutoField(primary_key=True)
-    type = models.CharField(max_length=100)
+    aid_type = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     distributionDate = models.DateField()
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
