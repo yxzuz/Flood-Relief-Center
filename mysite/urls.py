@@ -16,8 +16,10 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from flood_relief_center import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include('flood_relief_center.urls')),
 ]

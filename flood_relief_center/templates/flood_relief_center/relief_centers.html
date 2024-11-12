@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %} Relief Centers {% endblock %}
+
+{% block content %}
+
+<main role="main">
+<br />
+<br />
+<br />
+<br />
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Location</th>
+            <th scope="col">Capacity</th>
+            <th scope="col">CurrentOccupancy</th>
+            <th scope="col">CenterNumber</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            {% for center in relief_centers_lists %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>  <!-- This will automatically give the row number -->
+                    <td>{{ center.name }}</td>
+                    <td>{{ center.location }}</td>
+                    <td>{{ center.capacity }}</td>
+                    <td>{{ center.currentOccupancy }}</td>
+                    <td>{{ center.centerNumber }}</td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+      </table>
+
+</main>
+
+<footer class="container">
+    <p>&copy; Company 2017-2020</p>
+</footer>
+{% endblock %}

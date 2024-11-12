@@ -3,6 +3,23 @@ from django.utils.translation import gettext_lazy as _
 
 from django.forms import ValidationError
 
+
+NEEDS_CHOICES = [
+    ('food and water', 'Food and Water'),
+    ('shelter', 'Shelter'),
+    ('clothing', 'Clothing'),
+    ('medical supplies', 'Medical Supplies'),
+    ('medical attention', 'Medical Attention'),
+    ('water purification tablets', 'Water Purification Tablets'),
+]
+
+class Need(models.Model):
+    name = models.CharField(max_length=50, choices=NEEDS_CHOICES, unique=True)
+
+    def __str__(self):
+        return self.get_name_display()  # Display readable name in admin
+    
+    
 # Create your models here.
 class ReliefCenter(models.Model):
     centerID = models.AutoField(primary_key=True)
@@ -24,14 +41,17 @@ class ReliefCenter(models.Model):
         # Run validation before saving
         self.full_clean()  # This triggers the clean method
         super().save(*args, **kwargs)
+        
+    def __str__(self):
+        return self.name
     
     
 class AffectedArea(models.Model):
     areaID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     population = models.PositiveIntegerField()
-    damageLevel = models.CharField(max_length=50)
-    needs = models.TextField()
+    damageLevel = models.CharField(max_length=8, choices=[('minor', 'Minor'), ('moderate', 'Moderate'), ('severe', 'Severe')])
+    needs = models.ManyToManyField(Need)  # Link to multiple Needs
 
     def __str__(self):
         return self.name
@@ -49,10 +69,11 @@ class Victim(models.Model):
     victimID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     age = models.PositiveIntegerField()
-    address = models.CharField(max_length=255)
+    address = models.TextField()
     familyMembers = models.PositiveIntegerField()
-    needs = models.TextField()
-    currentStatus = models.CharField(max_length=50)
+    # needs = models.CharField(max_length=50,choices=[('food and water', 'Food and Water'), ('shelter', 'Shelter'), ('clothing', 'Clothing'), ('medical supplies', 'Medical Supplies'), ('shelter', 'Shelter'), ('medical attention', 'Medical Attention'), ('water purification tablets', 'Water Purification Tablets')])
+    needs = models.ManyToManyField(Need)  # Link to multiple Needs
+    currentStatus = models.CharField(max_length=50,choices=[('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')])
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
     riskLevel = models.IntegerField(choices=[(1, 'Low'), (2, 'Moderate'), (3, 'High'), (4, 'Critical'), (5, 'Severe')])
     victimNumber = models.CharField(max_length=10, unique=True)
@@ -65,18 +86,18 @@ class AidPackage(models.Model):
     aid_type = models.CharField(max_length=100)
     quantity = models.PositiveIntegerField()
     distributionDate = models.DateField()
-    center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
-    victim = models.ForeignKey(Victim, on_delete=models.SET_NULL, null=True)
+    center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True, blank=True)
+    victim = models.ForeignKey(Victim, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.type} ({self.quantity})"
+        return f"{self.aid_type} ({self.quantity})"
     
 
 class Volunteer(models.Model):
     volunteerID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    skillSet = models.CharField(max_length=255, blank=True)
-    availabilityStatus = models.CharField(max_length=50)
+    position = models.CharField(max_length=30, choices=[('staff', 'Staff'), ('volunteer', 'Volunteer')])
+    availabilityStatus = models.CharField(max_length=50, choices=[('available', 'Available'), ('unavailable', 'Unavailable')])
     team = models.ForeignKey(RescueTeam, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -85,9 +106,9 @@ class Volunteer(models.Model):
 class Donation(models.Model):
     donationID = models.AutoField(primary_key=True)
     donorName = models.CharField(max_length=100)
-    type = models.CharField(max_length=50, choices=[('money', 'Money'), ('supplies', 'Supplies'), ('other', 'Other')])
+    donation_type = models.CharField(max_length=50, choices=[('money', 'Money'), ('supplies', 'Supplies'), ('other', 'Other')],null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    package = models.ForeignKey(AidPackage, on_delete=models.SET_NULL, null=True)
+    package = models.ForeignKey(AidPackage, on_delete=models.SET_NULL, null=True, blank=True)
     donationDate = models.DateField()
 
     def clean(self):
@@ -100,7 +121,7 @@ class Donation(models.Model):
         super().save(*args, **kwargs)
             
     def __str__(self):
-        return f"{self.donorName} - {self.type}"
+        return f"{self.donorName} - {self.donation_type}"
     
 class Member(models.Model):
     memberID = models.AutoField(primary_key=True)
@@ -122,4 +143,4 @@ class Finance(models.Model):
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f"{self.type} - {self.amount} ({self.date})"
+        return f"{self.finance_type} - {self.amount} ({self.date})"
