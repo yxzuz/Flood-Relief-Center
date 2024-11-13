@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %} Home {% endblock %}
+{% block title %} Relief Center Detail {% endblock %}
 
 {% block content %}
 
 <main role="main">
+<br />
+<br />
+<br />
+<br />
+<h1>Detail</h1>
+{% for center in relief_center_detail %}
+    <p>{{center.name}}</p> 
+{% endfor %}
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
@@ -21,18 +29,18 @@
         <!-- Example row of columns -->
         <div class="row">
             <div class="col-md-4">
-                <h2>All Donations</h2>
+                <h2>Donations</h2>
                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
                     mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
                     mollis euismod. Donec sed odio dui. </p>
                 <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:donations' %}"  role="button">View details &raquo;</a></p>
             </div>
             <div class="col-md-4">
-                <h2>All victims</h2>
+                <h2>Victims</h2>
                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
                     mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
                     mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:victims' %}" role="button">View details &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>Heading</h2>
@@ -49,7 +57,5 @@
 
 </main>
 
-<footer class="container">
-    <p>&copy; Company 2017-2020</p>
-</footer>
+
 {% endblock %}

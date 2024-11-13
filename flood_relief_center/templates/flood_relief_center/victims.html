@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+<!-- {% load static %} -->
+<head>
+    <link rel="stylesheet" href="{% static 'flood_relief_center/style.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+  </head>
+
+
+{% block title %} Victims {% endblock %}
+
+<body>
+{% block content %}
+<main role="main">
+<br />
+<br />
+<br />
+<br />
+<h1>All victims</h1>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Victim number</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Center</th>
+            <th scope="col">Address</th>
+            <th scope="col">Needs</th>
+            <th scope="col">Current Status</th>
+            <th scope="col">Risk Level</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            {% for victim in victim_lists %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>  
+                    <td>{{ victim.victimNumber }}</td>
+                    <td>{{ victim.name }}</td>
+                    <td>{{ victim.age }}</td>
+                    <td><a href="{% url 'flood-relief-center:relief-center-detail' victim.center.centerID %}">{{ victim.center }}</a></td>
+                    <td>{{ victim.address }}</td>
+                    <td>
+                        {% for need in victim.needs.all %}
+                            {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    
+                    <td>{{ victim.currentStatus }}</td>
+                    <td>{{ victim.get_riskLevel_display }}</td>
+
+
+                </tr>
+            {% endfor %}
+
+        </tbody>
+      </table>
+<div class="container position-relative">
+    <div class="btn-position position-absolute bottom-0 end-0">
+        <a href="#" class="btn btn-info btn-lg">
+            <span class="glyphicon glyphicon-plus"></span> Add
+        </a>
+    </div>
+</div>
+
+    
+    
+    
+</main>
+
+
+{% endblock %}
+</body>

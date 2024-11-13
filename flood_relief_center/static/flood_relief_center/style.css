@@ -1,0 +1,15 @@
+.container {
+    position: relative;
+}
+
+.btn-position {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 15px; /* Adjust to add spacing from the edges */
+}
+
+/* In 'flood_relief_center/style.css' */
+body {
+    background-color: pink;
+}

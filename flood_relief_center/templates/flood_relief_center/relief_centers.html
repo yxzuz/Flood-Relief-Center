@@ -9,6 +9,7 @@
 <br />
 <br />
 <br />
+<h1>Flood Relief Centers</h1>
     <table class="table">
         <thead>
           <tr>
@@ -24,8 +25,8 @@
 
             {% for center in relief_centers_lists %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>  <!-- This will automatically give the row number -->
-                    <td>{{ center.name }}</td>
+                    <th scope="row">{{ forloop.counter }}</th>  
+                    <td><a href="{% url 'flood-relief-center:relief-center-detail' center.centerID %}">{{ center.name }}</a></td>
                     <td>{{ center.location }}</td>
                     <td>{{ center.capacity }}</td>
                     <td>{{ center.currentOccupancy }}</td>
@@ -38,7 +39,5 @@
 
 </main>
 
-<footer class="container">
-    <p>&copy; Company 2017-2020</p>
-</footer>
+
 {% endblock %}
