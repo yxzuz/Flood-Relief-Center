@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+<!-- {% load static %} -->
+<head>
+    <link rel="stylesheet" href="{% static 'flood_relief_center/style.css' %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+  </head>
+
+
+{% block title %} Affected Areas {% endblock %}
+
+<body>
+{% block content %}
+<main role="main">
+<br />
+<br />
+<br />
+<br />
+<h1>All affected areas</h1>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Area ID</th>
+            <th scope="col">Area name</th>
+            <th scope="col">Population</th>
+            <th scope="col">Damage level</th>
+            <th scope="col">Needs</th>
+          </tr>
+        </thead>
+        <tbody>
+
+            {% for area in affected_area_lists %}
+                <tr>
+                    <td>{{ area.areaID }}</td>
+                    <td>{{ area.name }}</td>
+                    <td>{{ area.population }}</td>
+                    <td>{{ area.damageLevel }}</td>
+                    <td>
+                        {% for need in area.needs.all %}
+                            {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+      </table>
+
+    
+    
+    
+</main>
+
+
+{% endblock %}
+</body>
