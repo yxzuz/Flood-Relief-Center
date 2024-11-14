@@ -52,6 +52,7 @@ class VictimsListView(ListView):
         selected_center = self.request.GET.get("selected_center", "")
         selected_status = self.request.GET.get("selected_status", "")
         selected_risk_level = self.request.GET.get("selected_risk_level", "")
+        ordered_by = self.request.GET.get("ordered_by", "name")
         # age_range = self.request.GET.get("age_range", None)
 
         # Apply search filter
@@ -75,7 +76,7 @@ class VictimsListView(ListView):
         # if age_range:
         #     queryset = queryset.filter(age__lte=age_range)
 
-        return queryset
+        return queryset.order_by(ordered_by)
 
 
 class AffectedAreaListView(ListView):

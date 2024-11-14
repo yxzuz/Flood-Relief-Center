@@ -107,27 +107,23 @@
                     <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
                   </span>
                 </div>
-            </form>
+            <!-- </form> -->
                 <!-- END SEARCH INPUT -->
-                <p>Showing all results matching "victim's name"</p>
+                <p>Showing all results of query</p>
                 
                 <div class="padding"></div>
                 
                 <div class="row">
                   <!-- BEGIN VICTIM RESULT -->
-                  <div class="col-sm-6">
-                    <div class="btn-group">
-                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                        Order by <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Name</a></li>
-                        <li><a href="#">Date</a></li>
-                        <li><a href="#">View</a></li>
-                        <li><a href="#">Rating</a></li>
-                      </ul>
-                    </div>
+                  <div class="col-sm-2">
+                    <label for="orderparam" class="mt-3">Order by:</label>
+                    <select id="orderparam" name="orderparam" class="form-control">
+                        <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
+                        <option value="age" {% if orderparam == 'age' %}selected{% endif %}>Age</option>
+                        <option value="family_member" {% if orderparam == 'family_member' %}selected{% endif %}>Family Member</option>
+                    </select>
                   </div>
+            </form>
                   <!-- END VICTIM RESULT -->
                   
                   <div class="col-md-6 text-right">
@@ -148,6 +144,7 @@
                             <th scope="col">Victim number</th>
                             <th scope="col">Name</th>
                             <th scope="col">Age</th>
+                            <th scope="col">Family members</th>
                             <th scope="col">Center</th>
                             <th scope="col">Address</th>
                             <th scope="col">Needs</th>
@@ -163,6 +160,7 @@
                                     <td>{{ victim.victimNumber }}</td>
                                     <td>{{ victim.name }}</td>
                                     <td>{{ victim.age }}</td>
+                                    <td>{{ victim.familyMembers }}</td>
                                     <td><a href="{% url 'flood-relief-center:relief-center-detail' victim.center.centerID %}">{{ victim.center }}</a></td>
                                     <td>{{ victim.address }}</td>
                                     <td>
