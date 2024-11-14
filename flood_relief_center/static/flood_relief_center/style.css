@@ -1,40 +1,19 @@
- 
-
-
-/* .btn-position { */ */
-    /* position: absolute;
-    bottom: 0;
-    right: 0;
-    margin: 15px; Adjust to add spacing from the edges */
-    /* align-items: center; */
-/* }
-
-/* In 'flood_relief_center/style.css' */
-body {
-    background-color: rgb(186, 202, 195);
-}
-
-/* .container {
-    position: relative;
-    height: 300px;
-    border: 1px solid black;
-    padding: 20px;
-} */
 
 .btn-add {
-    display: inline-block;
-    background-color: rgb(7, 1, 61);
+    background-color: rgb(126, 200, 118);
     color: white;
-    padding: 10px 20px;
-    margin-left: 1200px;
-    margin-top: 6oo px;
     font-size: 18 px;
-    border-radius: 5px;
     text-decoration: none;
+    transition: background-color 0.3s;
 }
 
-.btn-position-add {
-    position: absolute;
-    bottom: 10 px;
-    right: 0 px;
+
+
+.btn-add:hover {
+    background-color: darkgreen; /* Darkens the button on hover */
+    color: white;
+}
+
+.bi-plus {
+    margin-right: 0; /* Removes space since this is now a standalone circular button */
 }
