@@ -38,12 +38,12 @@ class VictimsListView(ListView):
         context["risk_level"] = RISK_LEVEL
         return context
 
-    
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(name__icontains=search_query) | Q(victimNumber__icontains=search_query) | Q(address__icontains=search_query) | Q(center__name__icontains=search_query) | Q(riskLevel__icontains=search_query) | Q(currentStatus__icontains=search_query))
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(victimNumber__icontains=search_query) | Q(address__icontains=search_query) | Q(
+                center__name__icontains=search_query) | Q(riskLevel__icontains=search_query) | Q(currentStatus__icontains=search_query))
         return queryset
-        
+
     def get_queryset(self):
         queryset = Victim.objects.all()
 
@@ -52,13 +52,12 @@ class VictimsListView(ListView):
         selected_center = self.request.GET.get("selected_center", "")
         selected_status = self.request.GET.get("selected_status", "")
         selected_risk_level = self.request.GET.get("selected_risk_level", "")
-        ordered_by = self.request.GET.get("ordered_by", "name")
+        ordered_by = self.request.GET.get("orderparam", "name")
         # age_range = self.request.GET.get("age_range", None)
 
         # Apply search filter
         if search_query:
             queryset = self.get_search_query(queryset, search_query)
-
 
         # Apply center filter
         if selected_center:
@@ -75,7 +74,7 @@ class VictimsListView(ListView):
         # Apply age range filter (if provided)
         # if age_range:
         #     queryset = queryset.filter(age__lte=age_range)
-
+        print(ordered_by)
         return queryset.order_by(ordered_by)
 
 
