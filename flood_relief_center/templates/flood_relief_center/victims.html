@@ -8,7 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
   </head>
 
 
@@ -17,7 +18,7 @@
 <body>
 {% block content %}
 <main role="main">
-    <div class="container" style="margin-top:80px; margin-left:20px;">
+    <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
     <div class="row">
       <!-- BEGIN SEARCH RESULT -->
       <div class="col-md-12">
@@ -32,65 +33,56 @@
                 <!-- BEGIN FILTER BY CATEGORY -->
                 <h4>By category:</h4>
                 <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Application</label>
+                  <label><input type="checkbox" class="icheck"> Center</label>
                 </div>
                 <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Design</label>
+                  <label><input type="checkbox" class="icheck"> Name</label>
                 </div>
                 <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Desktop</label>
+                  <label><input type="checkbox" class="icheck"> Age</label>
                 </div>
                 <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Management</label>
+                  <label><input type="checkbox" class="icheck"> Address</label>
                 </div>
                 <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Mobile</label>
+                  <label><input type="checkbox" class="icheck"> Current Status</label>
+                </div>
+                <div class="checkbox">
+                    <label><input type="checkbox" class="icheck"> Risk level</label>
                 </div>
                 <!-- END FILTER BY CATEGORY -->
                 
                 <div class="padding"></div>
                 
-                <!-- BEGIN FILTER BY DATE -->
-                <h4>By date:</h4>
-                From
-                <div class="input-group date form_date" data-date="2014-06-14T05:25:07Z" data-date-format="dd-mm-yyyy" data-link-field="dtp_input1">
-                  <input type="text" class="form-control">
-                  <span class="input-group-addon bg-blue"><i class="fa fa-th"></i></span>
-                </div>
-                <input type="hidden" id="dtp_input1" value="">
+                <!-- BEGIN FILTER BY AGE -->
+                <h4>By age:</h4>
+                <label for="customRange2" class="form-label">Age Range</label>
+
+                <!-- Age Range Slider -->
+                <input type="range" class="form-range" min="0" max="100" id="customRange2" value="{{ age }}">
                 
-                To
-                <div class="input-group date form_date" data-date="2014-06-14T05:25:07Z" data-date-format="dd-mm-yyyy" data-link-field="dtp_input2">
-                  <input type="text" class="form-control">
-                  <span class="input-group-addon bg-blue"><i class="fa fa-th"></i></span>
-                </div>
-                <input type="hidden" id="dtp_input2" value="">
-                <!-- END FILTER BY DATE -->
+                <!-- Display the selected age dynamically -->
+                <span id="ageValue">{{ age }}</span>
+                <!-- END FILTER BY AGE -->
                 
                 <div class="padding"></div>
                 
-                <!-- BEGIN FILTER BY PRICE -->
-                <h4>By price:</h4>
-                Between <div id="price1">$300</div> to <div id="price2">$800</div>
-                <div class="slider-primary">
-                  <div class="slider slider-horizontal" style="width: 152px;"><div class="slider-track"><div class="slider-selection" style="left: 30%; width: 50%;"></div><div class="slider-handle round" style="left: 30%;"></div><div class="slider-handle round" style="left: 80%;"></div></div><div class="tooltip top hide" style="top: -30px; left: 50.1px;"><div class="tooltip-arrow"></div><div class="tooltip-inner">300 : 800</div></div><input type="text" class="slider" value="" data-slider-min="0" data-slider-max="1000" data-slider-step="1" data-slider-value="[300,800]" data-slider-tooltip="hide"></div>
-                </div>
-                <!-- END FILTER BY PRICE -->
+
               </div>
               <!-- END FILTERS -->
               <!-- BEGIN RESULT -->
-              <div class="col-md-9 full-width" style="background-color: aqua;" >
+              <div class="col-md-9 full-width" >
                 <h1><i class="fa fa-file-o"></i> All victims</h1>
                 <hr>
                 <!-- BEGIN SEARCH INPUT -->
                 <div class="input-group">
                   <input type="text" class="form-control" value="Victim's name">
                   <span class="input-group-btn">
-                    <button class="btn btn-primary" style="Height: 100%; Width: 40px;" type="button"><i class="fa fa-search"></i>search</button>
+                    <button class="btn btn-primary" type="button"><i class="fa fa-search"></i>search</button>
                   </span>
                 </div>
                 <!-- END SEARCH INPUT -->
-                <p>Showing all results matching "web development"</p>
+                <p>Showing all results matching "victim's name"</p>
                 
                 <div class="padding"></div>
                 
@@ -177,7 +169,14 @@
     </div>
 
 
+<!-- 
+        <div class="container" style="display: flex; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%;">
+        <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="#" role="button">Add</a></div>
 
+
+        
+
+     -->
     
     
 </main>
