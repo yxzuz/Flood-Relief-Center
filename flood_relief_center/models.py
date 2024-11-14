@@ -71,7 +71,6 @@ class Victim(models.Model):
     age = models.PositiveIntegerField()
     address = models.TextField()
     familyMembers = models.PositiveIntegerField()
-    # needs = models.CharField(max_length=50,choices=[('food and water', 'Food and Water'), ('shelter', 'Shelter'), ('clothing', 'Clothing'), ('medical supplies', 'Medical Supplies'), ('shelter', 'Shelter'), ('medical attention', 'Medical Attention'), ('water purification tablets', 'Water Purification Tablets')])
     needs = models.ManyToManyField(Need)  # Link to multiple Needs
     currentStatus = models.CharField(max_length=50,choices=[('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')])
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
