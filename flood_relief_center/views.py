@@ -1,13 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.generic import ListView
 from django.db.models import Q
 from .models import ReliefCenter, Donation, Victim, AffectedArea
 
 # Create your views here.
-CENTER = [center.name for center in ReliefCenter.objects.all()]
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
+
+
+def get_center_names():
+    return [center.name for center in ReliefCenter.objects.all()]
 
 
 def index(request):
@@ -33,7 +37,7 @@ class VictimsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["centers"] = CENTER
+        context["centers"] = get_center_names()
         context["current_status"] = STATUS
         context["risk_level"] = RISK_LEVEL
         return context
@@ -55,6 +59,12 @@ class VictimsListView(ListView):
         ordered_by = self.request.GET.get("orderparam", "name")
         # age_range = self.request.GET.get("age_range", None)
 
+        # checklist
+        selected_needs = self.request.GET.getlist("needs")
+        if selected_needs:
+            queryset = queryset.filter(
+                needs__name__in=selected_needs).distinct()
+
         # Apply search filter
         if search_query:
             queryset = self.get_search_query(queryset, search_query)
@@ -74,7 +84,7 @@ class VictimsListView(ListView):
         # Apply age range filter (if provided)
         # if age_range:
         #     queryset = queryset.filter(age__lte=age_range)
-        print(ordered_by)
+        # print(ordered_by)
         return queryset.order_by(ordered_by)
 
 
