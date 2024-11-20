@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import ListView
 from django.db.models import Q
+from .forms import VictimForm
 from .models import ReliefCenter, Donation, Victim, AffectedArea
 
 # Create your views here.
@@ -86,6 +87,30 @@ class VictimsListView(ListView):
             queryset = queryset.filter(age__lte=age_range)
         # print(ordered_by)
         return queryset.order_by(ordered_by)
+
+
+def edit_victim(request, victimID):
+    victim = Victim.objects.get(victimID=victimID)
+    form = VictimForm(instance=victim)
+    if request.method == 'POST':
+        form = VictimForm(request.POST, instance=victim)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:victims"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/edit_victim.html", context)
+
+
+def add_victim(request):
+    form = VictimForm()
+    if request.method == 'POST':
+        # print(request.POST)
+        form = VictimForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:victims"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/add_victim.html", context)
 
 
 class AffectedAreaListView(ListView):
