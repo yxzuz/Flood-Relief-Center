@@ -97,10 +97,21 @@
                 <label for="customRange2" class="form-label">Age Range</label>
 
                 <!-- Age Range Slider -->
-                <input type="range" class="form-range" min="0" max="100" id="customRange2" value="{{ age }}">
+                <input type="range" class="form-range" min="0" max="100" id="customRange2" name="age" value="{{ age|default:50 }}">
                 
                 <!-- Display the selected age dynamically -->
-                <span id="ageValue">{{ age }}</span>
+                <span id="ageValue">{{ age|default:50 }}</span>
+
+                <script>
+                  // Get references to the slider and the span
+                  const ageSlider = document.getElementById('customRange2');
+                  const ageValue = document.getElementById('ageValue');
+              
+                  // Update the span whenever the slider value changes
+                  ageSlider.addEventListener('input', function () {
+                      ageValue.textContent = ageSlider.value;
+                  });
+                </script>
                 <!-- END FILTER BY AGE -->
                 
                 <div class="padding"></div>
