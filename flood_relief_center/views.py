@@ -1,14 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
 from django.views.generic import ListView
 from django.db.models import Q
-from .models import ReliefCenter, Donation, Victim, AffectedArea
+from .models import ReliefCenter, Donation, Victim, AffectedArea, Volunteer
 
 # Create your views here.
 CENTER = [center.name for center in ReliefCenter.objects.all()]
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
-
+POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
+AVALIABILITY_STATUS = ['Avaliable', 'Not Avaliable']
+TEAM_ID = ['1', '2', '3', '4', '5']
 
 def index(request):
     return render(request, "flood_relief_center/index.html")
@@ -92,3 +95,60 @@ class ReliefCenterDetailView(ListView):
     def get_queryset(self):
         # Filter by centerID
         return ReliefCenter.objects.filter(centerID=self.kwargs.get('centerID'))
+
+
+class VolunteersListView(ListView):
+    model = Volunteer
+    context_object_name = "volunteer_list"
+    template_name = "flood_relief_center/volunteers.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context["centers"] = CENTER
+        context["position"] = POSITION
+        context["avaliability_status"] = AVALIABILITY_STATUS
+        context["teamID"] = TEAM_ID
+        return context
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(volunteersID__icontains=search_query) | Q(position__icontains=search_query) | Q(
+                center__name__icontains=search_query) | Q(avaliabilityStatus__icontains=search_query) | Q(teamID__icontains=search_query))
+        return queryset
+
+    def get_queryset(self):
+
+        # Get the query parameters from the request
+        # fixed_center_id = self.kwargs.get("centerID")
+        search_query = self.request.GET.get("search_query", "")
+        selected_position = self.request.GET.get("selected_position", "")
+        selected_avaliability_status = self.request.GET.get("selected_avaliabilityStatus", "")
+        selected_team_id = self.request.GET.get("selected_teamID", "")
+        ordered_by = self.request.GET.get("orderparam", "name")
+        # age_range = self.request.GET.get("age_range", None)
+
+        queryset = (Volunteer.objects.all())
+                    # .filter(center__centerID=fixed_center_id))
+
+        # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+
+        # Apply position filter
+        if selected_position:
+            queryset = queryset.filter(position=selected_position)
+
+        # Apply avaliability status filter
+        if selected_avaliability_status:
+            queryset = queryset.filter(avaliabilityStatus=selected_avaliability_status)
+
+        # Apply team id status filter
+        if selected_team_id:
+            queryset = queryset.filter(teamID=selected_team_id)
+
+        print(ordered_by)
+        return queryset.order_by(ordered_by)
+
+
+
+

@@ -1,211 +1,138 @@
 {% extends 'base.html' %}
-{% load static %}
+
 <head>
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
 
-  </head>
-
-
-{% block title %} Victims {% endblock %}
+{% block title %} Volunteers {% endblock %}
 
 <body>
 {% block content %}
-<main role="main">
-    <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
-    <div class="row">
-      <!-- BEGIN SEARCH RESULT -->
-      <div class="col-md-12">
-        <div class="grid search">
-          <div class="grid-body">
+    <main role="main">
+        <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
             <div class="row">
-              <!-- BEGIN FILTERS -->
-              <div class="col-md-2">
-                <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
-                <hr>
-                
-                <!-- BEGIN FILTER BY CATEGORY -->
-                <!-- <h4>By category:</h4>
-                <div class="checkbox">
-                  <label><input type="checkbox" class="icheck" name="name_search"> Name</label>
-                </div>
-                <div class="checkbox">
-                  <label><input type="checkbox" class="icheck"> Age</label>
-                </div>
-                <div class="checkbox">
-                  <label><input type="checkbox" class="icheck" name="address_search"> Address</label>
-                </div> -->
-                
-                <form method="GET" action=".">
-                <div class="container" style="padding: 0%;">
-                    <label for="center">Relief Center:</label>
-                    <select id="center" name="selected_center" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" disabled {% if not request.GET.selected_center %}selected{% endif %}>Select Center</option>
-                        {% for center in centers %}
-                            <option value="{ CenterID }" {% if center.id|stringformat:"s" == request.GET.selected_center %}selected{% endif %}>
-                                {{ center.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                
-                    <label for="position" class="mt-3">Status:</label>
-                    <select id="position" name="selected_position" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Position</option>
-                        {% for value, label in current_position %}
-                            <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    
-                
-                    <label for="avaliability_status" class="mt-3">Avaliability Status:</label>
-                    <select id="avaliability_status" name="selected_avaliability_status" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Avaliability Status</option>
-                        {% for value, label in avaliability_status %}
-                        <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                <!-- BEGIN SEARCH RESULT -->
+                <div class="col-md-12">
+                    <div class="grid search">
+                        <div class="grid-body">
+                            <div class="row">
+                                <!-- BEGIN FILTERS -->
+                                <div class="col-md-2">
+                                    <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
+                                    <hr>
+                                    <form method="GET" action=".">
+                                        <div class="container" style="padding: 0%;">
+                                            <label for="position" class="mt-3">Position:</label>
+                                            <select id="position" name="selected_position" class="form-control">
+                                                <option value="" selected disabled>Select Position</option>
+                                                {% for value, label in position %}
+                                                    <option value="{{ value }}">{{ label }}</option>
+                                                {% endfor %}
+                                            </select>
 
-                
-                
-                <!-- END FILTER BY CATEGORY -->
-                
-                <div class="padding"></div>
-                
-                <!-- BEGIN FILTER BY AGE -->
-                <br />
-                <h4>By age:</h4>
-                <label for="customRange2" class="form-label">Age Range</label>
+                                            <label for="avaliability_status" class="mt-3">Availability Status:</label>
+                                            <select id="avaliability_status" name="selected_availability_status" class="form-control">
+                                                <option value="" selected disabled>Select Availability Status</option>
+                                                {% for status in avaliability_status %}
+                                                    <option value="{{ status }}">{{ status }}</option>
+                                                {% endfor %}
+                                            </select>
 
-                <!-- Age Range Slider -->
-                <input type="range" class="form-range" min="0" max="100" id="customRange2" value="{{ age }}">
-                
-                <!-- Display the selected age dynamically -->
-                <span id="ageValue">{{ age }}</span>
-                <!-- END FILTER BY AGE -->
-                
-                <div class="padding"></div>
-                
-
-              </div>
-              <!-- END FILTERS -->
-              <!-- BEGIN RESULT -->
-              <div class="col-md-9 full-width" >
-                <h1><i class="fa fa-file-o"></i> All volunteers</h1>
-                <hr>
-                <!-- BEGIN SEARCH INPUT -->
-                <div class="input-group">
-                  <input type="text" class="form-control" name="search_query" value="">
-                  <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
-                  </span>
-                </div>
-            <!-- </form> -->
-                <!-- END SEARCH INPUT -->
-                <p>Showing all results of query</p>
-                
-                <div class="padding"></div>
-                
-                <div class="row">
-                  <!-- BEGIN VOLUNTEER RESULT -->
-                  <div class="col-sm-2">
-                    <label for="orderparam" class="mt-3">Order by:</label>
-                    <select id="orderparam" name="orderparam" class="form-control">
-                        <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
-                        <option value="position" {% if orderparam == 'position' %}selected{% endif %}>Position</option>
-                        <option value="avaliability_status" {% if orderparam == 'avaliability_status' %}selected{% endif %}>Avaliability Status</option>
-                        <option value="team_id" {% if orderparam == 'team_id' %}selected{% endif %}>Team ID</option>
-                    </select>
-                  </div>
-            </form>
-                  <!-- END VOLUNTEER RESULT -->
-                  
-                  <div class="col-md-6 text-right">
-                    <span class="btn-group">
-                      <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
-                      <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
-                    </span>
-                  </div>
-                </div>
-                
-                <!-- BEGIN TABLE RESULT -->
-                <div class="table-responsive">
-                  <table class="table table-hover">
-                    <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Volunteer ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Position</th>
-                            <th scope="col">Center</th>
-                            <th scope="col">Avaliability Status</th>
-                            <th scope="col">Team ID</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                
-                            {% for volunteer in volunteer_lists %}
-                                <tr>
-                                    <th scope="row">{{ forloop.counter }}</th>  
-                                    <td>{{ volunteerID }}</td>
-                                    <td>{{ volunteer.name }}</td>
-                                    <td>{{ volunteer.position }}</td>
-                                    <td>{{ volunteer.avaliabilityStatus }}</td>
-                                    <!-- <td><a href="{% url 'flood-relief-center:relief-center-detail' volunteer.center.centerID %}">{{ victim.center }}</a></td> -->
-                                    <td>{{ volunteer.teamID }}</td>
-                                    <!-- <td>
-                                        {% for need in volunteer.needs.all %}
-                                            {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
-                                        {% endfor %}
-                                    </td> -->
-                                    
-                                    <!-- <td>{{ volunteer.get_currentStatus_display}}</td>
-                                    <td>{{ volunteer.get_riskLevel_display }}</td> -->
-                
-                
-                                </tr>
-                            {% endfor %}
-                
-                        </tbody>
-                      </table>
- 
-                  </tbody></table>
-                </div>
-                <!-- END TABLE RESULT -->
-                
-
-              <!-- END RESULT -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- END SEARCH RESULT -->
-    </div>
-    </div>
+                                            <label for="team_id" class="mt-3">Team ID:</label>
+                                            <select id="team_id" name="selected_team_id" class="form-control">
+                                                <option value="" selected disabled>Select Team ID</option>
+                                                {% for id in teamID %}
+                                                    <option value="{{ id }}">{{ id }}</option>
+                                                {% endfor %}
+                                            </select>
 
 
-<!-- 
-        <div class="container" style="display: flex; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%;">
-        <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="#" role="button">Add</a></div>
+                                        </div>
+
+                                        <!-- Age Range Slider -->
+                                        <br />
+                                        <h4>By age:</h4>
+                                        <label for="customRange2" class="form-label">Age Range</label>
+                                        <input type="range" class="form-range" min="0" max="100" id="customRange2" value="{{ age }}">
+                                        <span id="ageValue">{{ age }}</span>
 
 
-        
+                                    </form> <!-- Close form here -->
 
-     -->
-    
-    
-</main>
+                                </div> <!-- END FILTERS -->
+
+                                <!-- BEGIN RESULT -->
+                                <div class="col-md-9 full-width">
+                                    <h1><i class="fa fa-file-o"></i> All volunteers</h1>
+                                    <hr>
+
+                                    <!-- Search Input-->
+                                    <div class="input-group">
+                                      <input type="text" class="form-control" name="search_query" value="">
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
+                                      </span>
+                                    </div>
+                                    <p></p>
+                                    <p>Showing all results of query</p>
+<!--                                    <div class="padding"></div>-->
+                                    <!-- BEGIN VOLUNTEER RESULT BUT STILL VICTIM-->
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                        <label for="orderparam" class="mt-3">Order by:</label>
+                                        <select id="orderparam" name="orderparam" class="form-control">
+                                            <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
+                                            <option value="age" {% if orderparam == 'position' %}selected{% endif %}>Position</option>
+                                            <option value="familyMembers" {% if orderparam == 'avaliability_status' %}selected{% endif %}>Avaliability Status</option>
+                                            <option value="familyMembers" {% if orderparam == 'team_id' %}selected{% endif %}>Team ID</option>
+                                        </select>
+                                        </div>
+                                    </div>
 
 
+                                    <p></p>
+                                    <!-- BEGIN TABLE RESULT -->
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Volunteer ID</th>
+                                                    <th scope="col">Name</th>
+                                                    <th scope="col">Position</th>
+<!--                                                    <th scope="col">Center</th>-->
+                                                    <th scope="col">Availability Status</th>
+                                                    <th scope="col">Team ID</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                {% for volunteer in volunteer_lists %}
+                                                    <tr>
+                                                        <th scope="row">{{ forloop.counter }}</th>
+                                                        <td>{{ volunteer.volunteerID }}</td> <!-- Assuming volunteerID should be volunteer.id -->
+                                                        <td>{{ volunteer.name }}</td>
+                                                        <td>{{ volunteer.position }}</td>
+                                                        <td>{{ volunteer.availability_status }}</td> <!-- Correct spelling -->
+                                                        <td>{{ volunteer.teamID }}</td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                            </tbody>
+                                        </table>
+                                    </div> <!-- END TABLE RESULT -->
+
+                                </div> <!-- END RESULT -->
+                            </div> <!-- END ROW -->
+                        </div> <!-- END GRID BODY -->
+                    </div> <!-- END GRID SEARCH -->
+                </div> <!-- END SEARCH RESULT -->
+            </div> <!-- END ROW -->
+        </div> <!-- END CONTAINER FLUID -->
+    </main>
 {% endblock %}
 </body>
