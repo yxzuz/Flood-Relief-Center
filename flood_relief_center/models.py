@@ -100,7 +100,6 @@ class Volunteer(models.Model):
     team = models.ForeignKey(RescueTeam, on_delete=models.SET_NULL, null=True)
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
 
-
     def __str__(self):
         return self.name
     
