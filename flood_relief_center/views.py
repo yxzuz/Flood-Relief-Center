@@ -122,11 +122,13 @@ class VolunteersListView(ListView):
         # fixed_center_id = self.kwargs.get("centerID")
         search_query = self.request.GET.get("search_query", "")
         selected_position = self.request.GET.get("selected_position", "")
-        selected_avaliability_status = self.request.GET.get("selected_avaliabilityStatus", "")
+        selected_avaliability_status = self.request.GET.get("selected_availability_status", "")
         selected_team_id = self.request.GET.get("selected_teamID", "")
         ordered_by = self.request.GET.get("orderparam", "name")
         # age_range = self.request.GET.get("age_range", None)
-
+        
+        print("searchq",search_query)
+        print("elect",selected_position)
         queryset = (Volunteer.objects.all())
                     # .filter(center__centerID=fixed_center_id))
 
@@ -146,7 +148,7 @@ class VolunteersListView(ListView):
         if selected_team_id:
             queryset = queryset.filter(teamID=selected_team_id)
 
-        print(ordered_by)
+        print(queryset)
         return queryset.order_by(ordered_by)
 
 

@@ -61,7 +61,7 @@
                                         <span id="ageValue">{{ age }}</span>
 
 
-                                    </form> <!-- Close form here -->
+                                    
 
                                 </div> <!-- END FILTERS -->
 
@@ -77,6 +77,7 @@
                                         <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
                                       </span>
                                     </div>
+                                </form> <!-- Close form here -->
                                     <p></p>
                                     <p>Showing all results of query</p>
 <!--                                    <div class="padding"></div>-->
@@ -111,7 +112,7 @@
                                             </thead>
                                             <tbody>
 
-                                                {% for volunteer in volunteer_lists %}
+                                                {% for volunteer in volunteer_list %}
                                                     <tr>
                                                         <th scope="row">{{ forloop.counter }}</th>
                                                         <td>{{ volunteer.volunteerID }}</td> <!-- Assuming volunteerID should be volunteer.id -->
