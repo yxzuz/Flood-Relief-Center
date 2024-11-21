@@ -17,3 +17,14 @@ btn.btn-add {
 .bi-plus {
     margin-right: 0; /* Removes space since this is now a standalone circular button */
 }
+
+/* .body {
+    background-color: blueviolet;
+} */
+
+.jumbotron {
+    background-image: url("../images/relief_background.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
