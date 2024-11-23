@@ -5,7 +5,7 @@ from django.db.models.functions import Lower
 from django.views.generic import ListView
 from django.db.models import Q
 from .forms import VictimForm, DonationForm
-from .models import ReliefCenter, Donation, Victim, AffectedArea
+from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES
 
 # Create your views here.
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
@@ -218,9 +218,31 @@ class StatsVictim(ListView):
         print(aid_packages_data)
         return aid_packages_data
 
+    def risk_level_data(self):
+        risk_level_data = Victim.objects.values(
+            'riskLevel').annotate(count=Count('victimID'))
+        risk_level_data_dict = {level[0]: 0 for level in RISK_LEVEL}
+        for entry in risk_level_data:
+            risk_level_data_dict[entry['riskLevel']] = entry['count']
+        print(risk_level_data)
+        return risk_level_data
+
+    def needs_data(self):
+        needs_data = Victim.objects.values(
+            'needs').annotate(count=Count('victimID'))
+        needs_data_dict = {level[1]: 0 for level in NEEDS_CHOICES}
+        for entry in needs_data:
+            needs_data_dict[entry['needs']] = entry['count']
+        print(needs_data)
+        return needs_data
+    
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["aid_packages_data"] = self.aid_packages_data()
+        context["risk_level_data"] = self.risk_level_data()
+        context["needs_data"] = self.needs_data()
         context["current_status"] = STATUS
         context["risk_level"] = RISK_LEVEL
         return context

@@ -68,6 +68,100 @@ $(document).ready(function(){
             }
         }
     });
+
+    const data2 = {
+        labels: [
+            {% for item in risk_level_data %}
+                "{{ item.riskLevel }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Total Number of Victims by Risk Level',
+            data: [
+                {% for item in risk_level_data %}
+                    "{{ item.count }}",
+                {% endfor %}
+            ],  
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(75, 192, 192)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 99, 132)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+
+    // Second chart (Pie chart for risk level data)
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    const myChart2 = new Chart(ctx2, {
+        type: 'pie',  // Pie chart for the second data
+        data: data2,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+    const data3 = {
+        labels: [
+            {% for item in needs_data %}
+                "{{ item.needs }}",
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Victims catagorized by their specific needs',
+            data: [
+                {% for item in needs_data %}
+                    "{{ item.count }}",
+                {% endfor %}
+            ],  
+            backgroundColor: [
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(75, 192, 192)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 99, 132)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    // Third chart (Line chart for risk level data)
+    const ctx3 = document.getElementById('chart3').getContext('2d');
+    const myChart3 = new Chart(ctx3, {
+        type: 'bar',  // Line chart for the second data
+        data: data3,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 });
 </script>
 {% endblock %}
@@ -114,14 +208,6 @@ $(document).ready(function(){
                   
                 
                 <div class="container" style="padding: 0%;">
-                    <!-- <label for="center">Relief Center:</label>
-                    <select id="center" name="selected_center" class="form-control"> -->
-                        <!-- Null option at the top -->
-                        <!-- <option value="" selected disabled>Select Center</option>
-                        {% for center in centers %}
-                        <option value="{{ center }}">{{ center }}</option>
-                        {% endfor %}
-                    </select> -->
                 
                     <label for="status" class="mt-3">Status:</label>
                     <select id="status" name="selected_status" class="form-control">
@@ -192,52 +278,39 @@ $(document).ready(function(){
                     </span>
                     </div>
   
-                  <div style="border:solid black; display:inline-block; margin-top: 20px;">
+                <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue;">
                                   
                       
-                      <canvas id="chart" width="300" height="300"></canvas>
-
-
-                  </div> 
+                      <!-- <canvas id="chart" width="300" height="300"></canvas> -->
+                      <div class="chart-container" style="display:inline-block; margin-right: 20px; text-align: center;">
+                        <!-- First Chart (Bar chart) -->
+                         
+                        <p>Number of aid packages requested by victim's status</p>
+                       
+                        <canvas id="chart" width="500" height="300"></canvas>
+                        
+                        </div>
+                    
+                    <div class="chart-container" style="display:inline-block; margin-left: 60px; text-align: center; ">
+                        <!-- Second Chart (Bar chart) -->
+                        <p>Victim catagorized by their risk level</p>
+                  
+                        <canvas id="chart2" width="300" height="300"></canvas>
+                        
+                    </div>
+               </div> 
+               <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue; text-align: center;">
+                <div class="chart-container" style="display:inline-block; text-align: center; ">
+                    <!-- Second Chart (Bar chart) -->
+                    <p>Victim catagorized by their needs</p>
+              
+                    <canvas id="chart3" width="700" height="300"></canvas>
+                    
                 </div>
-                
-                <!-- BEGIN TABLE RESULT -->
-                <div class="table-responsive">
-                  <table class="table table-hover">
-                    <table class="table">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Victim number</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Age</th>
-                            <th scope="col">Family members</th>
-                            <th scope="col">Center</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Needs</th>
-                            <th scope="col">Current Status</th>
-                            <th scope="col">Risk Level</th>
-                            <th scope="col">Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
 
+               </div>
                 
-                        </tbody>
-                      </table>
-                  </tbody></table>
-                </div>
-                <!-- END TABLE RESULT -->
-                
-
-              <!-- END RESULT -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- END SEARCH RESULT -->
-    </div>
-    </div>
+ 
 
     
 
