@@ -9,6 +9,8 @@ from .models import ReliefCenter, Donation, Victim, AffectedArea
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
+DONATION_TYPE = [('money', 'Money'), ('supplies',
+                                      'Supplies'), ('other', 'Other')]
 
 
 def get_center_names():
@@ -29,6 +31,53 @@ class DonationListView(ListView):
     model = Donation
     context_object_name = "donation_lists"
     template_name = "flood_relief_center/donations.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["donation_type"] = DONATION_TYPE
+        context["risk_level"] = RISK_LEVEL
+        return context
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(donorName__icontains=search_query) | Q(donation_type__icontains=search_query) | Q(package__aid_type__icontains=search_query))
+        return queryset
+
+    def get_queryset(self):
+        queryset = Donation.objects.all()
+
+        # Get the query parameters from the request
+        search_query = self.request.GET.get("search_query", "")
+        selected_donation = self.request.GET.get("selected_donation", "")
+        # selected_status = self.request.GET.get("selected_status", "")
+        # selected_risk_level = self.request.GET.get("selected_risk_level", "")
+        ordered_by = self.request.GET.get("orderparam", "donorName")
+        amount_min = self.request.GET.get("min_amount", None)
+        amount_max = self.request.GET.get("max_amount", None)
+
+        # # checklist
+        # selected_needs = self.request.GET.getlist("needs")
+        # if selected_needs:
+        #     queryset = queryset.filter(
+        #         needs__name__in=selected_needs).distinct()
+
+        # # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+
+        # # Apply donor name filter
+        if selected_donation:
+            queryset = queryset.filter(donation_type=selected_donation)
+
+
+        # # Apply amount range filter (if provided)
+        if amount_min:
+            queryset = queryset.filter(amount__gte=amount_min)
+        if amount_max:
+            queryset = queryset.filter(amount__lte=amount_max)
+        # print(queryset)
+        # return queryset
+        return queryset.order_by(ordered_by)
 
 
 class VictimsListView(ListView):
@@ -54,9 +103,10 @@ class VictimsListView(ListView):
 
         # Get the query parameters from the request
         search_query = self.request.GET.get("search_query", "")
-        selected_center = self.request.GET.get("selected_center", "")
+        selected_donation = self.request.GET.get("selected_donation", "")
         selected_status = self.request.GET.get("selected_status", "")
         selected_risk_level = self.request.GET.get("selected_risk_level", "")
+
         ordered_by = self.request.GET.get("orderparam", "name")
         age_range = self.request.GET.get("age", None)
 
@@ -71,22 +121,23 @@ class VictimsListView(ListView):
             queryset = self.get_search_query(queryset, search_query)
 
         # Apply center filter
-        if selected_center:
-            queryset = queryset.filter(center__name=selected_center)
+        if selected_donation:
+            queryset = queryset.filter(center__name=selected_donation)
 
         # Apply status filter
         if selected_status:
             queryset = queryset.filter(currentStatus=selected_status)
 
-        # Apply risk level filter
+        # # Apply risk level filter
         if selected_risk_level:
             queryset = queryset.filter(riskLevel=selected_risk_level)
 
-        # Apply age range filter (if provided)
+        # # Apply age range filter (if provided)
         if age_range:
             queryset = queryset.filter(age__lte=age_range)
-        # print(ordered_by)
+        print(ordered_by)
         return queryset.order_by(ordered_by)
+        
 
 
 def edit_victim(request, victimID):
