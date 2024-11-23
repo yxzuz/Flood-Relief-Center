@@ -7,7 +7,9 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("relief-centers/", views.ReliefCentersListView.as_view(), name="relief-centers"),
     path("donations/", views.DonationListView.as_view(), name="donations"),
+    path("add-donation/", views.add_donation, name="add-donation"),
     path("relief-centers/<int:centerID>/", views.ReliefCenterDetailView.as_view(), name="relief-center-detail"),
+    
     path("victims/", views.VictimsListView.as_view(), name="victims"),
     path("edit-victim/<int:victimID>/", views.edit_victim, name="edit-victim"),
     path("add-victim", views.add_victim, name="add-victim"),
