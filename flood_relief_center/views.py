@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.db.models.functions import Lower
 from django.views.generic import ListView
 from django.db.models import Q
-from .forms import VictimForm, DonationForm
+from .forms import VictimForm, DonationForm, AffectedAreaForm
 from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES
 
 # Create your views here.
@@ -13,6 +13,8 @@ RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
 DONATION_TYPE = [('money', 'Money'), ('supplies',
                                       'Supplies'), ('other', 'Other')]
+DAMAGE_LEVEL = [('minor', 'Minor'), ('moderate',
+                                     'Moderate'), ('severe', 'Severe')]
 
 
 def get_center_names():
@@ -234,8 +236,6 @@ class StatsVictim(ListView):
             needs_data_dict[entry['needs']] = entry['count']
         print(needs_data)
         return needs_data
-    
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -255,6 +255,52 @@ class AffectedAreaListView(ListView):
     model = AffectedArea
     context_object_name = "affected_area_lists"
     template_name = "flood_relief_center/affected_areas.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["damage_level"] = DAMAGE_LEVEL
+        return context
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query))
+        return queryset
+
+    def get_queryset(self):
+        queryset = AffectedArea.objects.all()
+
+        # Get the query parameters from the request
+        search_query = self.request.GET.get("search_query", "")
+        selected_damage_level = self.request.GET.get(
+            "selected_damage_level", "")
+
+        ordered_by = self.request.GET.get("orderparam", "name")
+        age_range = self.request.GET.get("age", None)
+
+        # checklist
+        selected_needs = self.request.GET.getlist("needs")
+        if selected_needs:
+            queryset = queryset.filter(
+                needs__name__in=selected_needs).distinct()
+
+        # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+
+        # Apply status filter
+        if selected_damage_level:
+            queryset = queryset.filter(damageLevel=selected_damage_level)
+
+        # # Apply age range filter (if provided)
+        if age_range:
+            queryset = queryset.filter(age__lte=age_range)
+        if ordered_by == "name":
+            queryset = queryset.annotate(lower_name=Lower(
+                "name")).order_by("lower_name")
+        else:
+            queryset = queryset.order_by(ordered_by)
+
+        return queryset
 
 
 class ReliefCenterDetailView(ListView):
