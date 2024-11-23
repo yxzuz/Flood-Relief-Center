@@ -127,13 +127,18 @@
                           {% for donation in donation_lists %}
                               <tr>
                                   <th scope="row">{{ forloop.counter }}</th>  <!-- This will automatically give the row number -->
-                                  <td><a href="{% url 'flood-relief-center:edit-donation' donation.donationID  %}">{{ donation.donorName }}</a></td>
+                                  <td>{{ donation.donorName }}</td>
                                   <td>{{ donation.donation_type }}</td>
                                   <td>{{ donation.amount }}</td>
                                   <td>{{ donation.package }}</td>
                                   <td>{{ donation.donationDate }}</td>
                                   <!-- <td><a href="{% url 'flood-relief-center:delete-donation' donation.donationID  %}">Delete</a></td> -->
                                   <td>
+                                    <a 
+                                    href="{% url 'flood-relief-center:edit-donation' donation.donationID %}" 
+                                    style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                    Edit
+                                    </a>
                                     <a 
                                       href="{% url 'flood-relief-center:delete-donation' donation.donationID %}" 
                                       style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
