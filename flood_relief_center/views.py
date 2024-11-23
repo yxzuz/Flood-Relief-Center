@@ -90,6 +90,11 @@ def edit_donation(request, donationID):
     context = {"form": form}
     return render(request, "flood_relief_center/edit_victim.html", context)
 
+def delete_donation(request, donationID):
+    donation = Donation.objects.get(donationID=donationID)
+    donation.delete()
+    return redirect(reverse("flood-relief-center:donations"))
+
 
 def add_donation(request):
     form = DonationForm()
@@ -189,6 +194,10 @@ def add_victim(request):
     context = {"form": form}
     return render(request, "flood_relief_center/add_victim.html", context)
 
+def delete_victim(request, victimID):
+    victim = Victim.objects.get(victimID=victimID)
+    victim.delete()
+    return redirect(reverse("flood-relief-center:victims"))
 
 class AffectedAreaListView(ListView):
     model = AffectedArea

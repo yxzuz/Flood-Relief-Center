@@ -175,6 +175,7 @@
                             <th scope="col">Needs</th>
                             <th scope="col">Current Status</th>
                             <th scope="col">Risk Level</th>
+                            <th scope="col">Delete</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -196,6 +197,15 @@
                                     
                                     <td>{{ victim.get_currentStatus_display}}</td>
                                     <td>{{ victim.get_riskLevel_display }}</td>
+                                    <!-- <td><a href="{% url 'flood-relief-center:delete-victim' victim.victimID  %}">Delete</a></td> -->
+                                    <td>
+                                      <a 
+                                        href="{% url 'flood-relief-center:delete-victim' victim.victimID %}" 
+                                        style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
+                                      >
+                                        Delete
+                                      </a>
+                                    </td>
                 
                 
                                 </tr>
