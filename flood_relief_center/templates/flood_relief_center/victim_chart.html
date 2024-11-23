@@ -13,17 +13,25 @@
   </head>
 
 
-{% block title %} Victims {% endblock %}
+{% block title %} Victims statistics {% endblock %}
 
 {% block scripts %}
 <script>
 $(document).ready(function(){
     // Data for the chart
     const data = {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [
+            {% for item in aid_packages_data %}
+                "{{ item.currentStatus }}",
+            {% endfor %}    
+        ],
         datasets: [{
-            label: 'My First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],  // Example data
+            label: 'total number of aid packages',
+            data: [
+                {% for item in aid_packages_data %}
+                    "{{ item.count }}",
+                {% endfor %}
+            ],  
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(255, 159, 64, 0.2)',
@@ -63,7 +71,6 @@ $(document).ready(function(){
 });
 </script>
 {% endblock %}
-
 
 
 <body>
@@ -107,14 +114,14 @@ $(document).ready(function(){
                   
                 
                 <div class="container" style="padding: 0%;">
-                    <label for="center">Relief Center:</label>
-                    <select id="center" name="selected_center" class="form-control">
+                    <!-- <label for="center">Relief Center:</label>
+                    <select id="center" name="selected_center" class="form-control"> -->
                         <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Center</option>
+                        <!-- <option value="" selected disabled>Select Center</option>
                         {% for center in centers %}
                         <option value="{{ center }}">{{ center }}</option>
                         {% endfor %}
-                    </select>
+                    </select> -->
                 
                     <label for="status" class="mt-3">Status:</label>
                     <select id="status" name="selected_status" class="form-control">
@@ -172,33 +179,9 @@ $(document).ready(function(){
               <!-- END FILTERS -->
               <!-- BEGIN RESULT -->
               <div class="col-md-9 full-width" >
-                <h1><i class="fa fa-file-o"></i> All victims</h1>
-                <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
-                  <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-victim' %}" role="button">Add</a></div>
-                  <hr>
-          
-                <!-- BEGIN SEARCH INPUT -->
-                <div class="input-group">
-                  <input type="text" class="form-control" name="search_query" value="">
-                  <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
-                  </span>
-                </div>
-                <!-- END SEARCH INPUT -->
-                <p>Showing all results of query</p>
-                
-                <div class="padding"></div>
-                
-                <div class="row">
-                  <!-- BEGIN VICTIM RESULT -->
-                  <div class="col-sm-2">
-                    <label for="orderparam" class="mt-3">Order by:</label>
-                    <select id="orderparam" name="orderparam" class="form-control">
-                        <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
-                        <option value="age" {% if orderparam == 'age' %}selected{% endif %}>Age</option>
-                        <option value="familyMembers" {% if orderparam == 'familyMembers' %}selected{% endif %}>Member</option>
-                    </select>
-                  </div>
+                <h1><i class="fa fa-file-o"></i> Overall Victims Statistics</h1>
+ 
+
             </form>
                   <!-- END VICTIM RESULT -->
                   
@@ -207,7 +190,15 @@ $(document).ready(function(){
                       <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
                       <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
                     </span>
-                  </div>
+                    </div>
+  
+                  <div style="border:solid black; display:inline-block; margin-top: 20px;">
+                                  
+                      
+                      <canvas id="chart" width="300" height="300"></canvas>
+
+
+                  </div> 
                 </div>
                 
                 <!-- BEGIN TABLE RESULT -->
@@ -230,54 +221,10 @@ $(document).ready(function(){
                           </tr>
                         </thead>
                         <tbody>
-                
-                            {% for victim in victim_lists %}
-                                <tr>
-                                    <th scope="row">{{ forloop.counter }}</th>  
-                                    <td>{{ victim.victimNumber }}</td>
-                                    <td>{{ victim.name }}</td>
 
-                                    <td>{{ victim.age }}</td>
-                                    <td>{{ victim.familyMembers }}</td>
-                                    <td><a href="{% url 'flood-relief-center:relief-center-detail' victim.center.centerID %}">{{ victim.center }}</a></td>
-                                    <td>{{ victim.address }}</td>
-                                    <td>
-                                        {% for need in victim.needs.all %}
-                                            {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
-                                        {% endfor %}
-                                    </td>
-                                    
-                                    <td>{{ victim.get_currentStatus_display}}</td>
-                                    <td>{{ victim.get_riskLevel_display }}</td>
-                                    <td>
-                                      <a 
-                                      href="{% url 'flood-relief-center:edit-victim' victim.victimID %}" 
-                                      style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
-                                      Edit
-                                      </a>
-                                      <a 
-                                        href="{% url 'flood-relief-center:delete-victim' victim.victimID %}" 
-                                        style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
-                                      >
-                                        Delete
-                                      </a>
-                                      
-
-                                    
-                                    
-                                    </td>
-                
-                
-                                </tr>
-                            {% endfor %}
                 
                         </tbody>
                       </table>
-                      <!-- <hr />
-                      <h1>Overall Stats</h1>
-                      <div style="width: 40%; height:40%">
-                      <canvas id="chart" width="20" height="20"></canvas>
-                    </div> -->
                   </tbody></table>
                 </div>
                 <!-- END TABLE RESULT -->

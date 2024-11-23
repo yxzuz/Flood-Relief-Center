@@ -17,7 +17,10 @@ urlpatterns = [
     path("edit-victim/<int:victimID>/", views.edit_victim, name="edit-victim"),
     path("add-victim", views.add_victim, name="add-victim"),
     path("delete-victim/<int:victimID>/", views.delete_victim, name="delete-victim"),
+    path("stats-victims/", views.StatsVictim.as_view(), name="stats-victims"),
+
     
     
     path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas"),
+    
 ]

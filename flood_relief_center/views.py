@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.db.models import Count
 from django.db.models.functions import Lower
 from django.views.generic import ListView
 from django.db.models import Q
@@ -90,6 +91,7 @@ def edit_donation(request, donationID):
     context = {"form": form}
     return render(request, "flood_relief_center/edit_victim.html", context)
 
+
 def delete_donation(request, donationID):
     donation = Donation.objects.get(donationID=donationID)
     donation.delete()
@@ -117,6 +119,7 @@ class VictimsListView(ListView):
         context["centers"] = get_center_names()
         context["current_status"] = STATUS
         context["risk_level"] = RISK_LEVEL
+        # context["aid_packages_data"] = self.aid_packages_data()
         return context
 
     def get_search_query(self, queryset, search_query):
@@ -167,7 +170,7 @@ class VictimsListView(ListView):
                 "name")).order_by("lower_name")
         else:
             queryset = queryset.order_by(ordered_by)
-            
+
         return queryset
 
 
@@ -194,10 +197,38 @@ def add_victim(request):
     context = {"form": form}
     return render(request, "flood_relief_center/add_victim.html", context)
 
+
 def delete_victim(request, victimID):
     victim = Victim.objects.get(victimID=victimID)
     victim.delete()
     return redirect(reverse("flood-relief-center:victims"))
+
+
+class StatsVictim(ListView):
+    model = Victim
+    context_object_name = "victim_lists"
+    template_name = "flood_relief_center/victim_chart.html"
+
+    def aid_packages_data(self):
+        aid_packages_data = Victim.objects.values(
+            'currentStatus').annotate(count=Count('victimID'))
+        aid_packages_data_dict = {status[0]: 0 for status in STATUS}
+        for entry in aid_packages_data:
+            aid_packages_data_dict[entry['currentStatus']] = entry['count']
+        print(aid_packages_data)
+        return aid_packages_data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["aid_packages_data"] = self.aid_packages_data()
+        context["current_status"] = STATUS
+        context["risk_level"] = RISK_LEVEL
+        return context
+
+# def stats_victims(request):
+#     context = {}
+#     return render(request, "flood_relief_center/victim_chart.html")
+
 
 class AffectedAreaListView(ListView):
     model = AffectedArea
