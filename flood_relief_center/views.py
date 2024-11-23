@@ -119,7 +119,6 @@ class VictimsListView(ListView):
         context["centers"] = get_center_names()
         context["current_status"] = STATUS
         context["risk_level"] = RISK_LEVEL
-        # context["aid_packages_data"] = self.aid_packages_data()
         return context
 
     def get_search_query(self, queryset, search_query):

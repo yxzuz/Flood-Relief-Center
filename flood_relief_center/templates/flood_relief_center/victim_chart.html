@@ -171,112 +171,11 @@ $(document).ready(function(){
 {% block content %}
 <main role="main">
     <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
-    <div class="row">
-      <!-- BEGIN SEARCH RESULT -->
-      <div class="col-md-12">
-        <div class="grid search">
-          <div class="grid-body">
-            <div class="row">
-              <!-- BEGIN FILTERS -->
-              <div class="col-md-2">
-                <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
-                <hr>
-                
-                <!-- BEGIN FILTER BY CATEGORY -->
-                <form method="GET" action=".">
+        <div class="row d-flex justify-content-center">
 
-
-                  <h4>By Needs:</h4>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="food and water"> Food and Water</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="shelter"> Shelter</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="clothing"> Clothing</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="medical supplies"> Medical Supplies</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="medical attention"> Medical Attention</label>
-                  </div>
-                  <div class="checkbox">
-                    <label><input type="checkbox" class="icheck" name="needs" value="water purification tablets"> Water Purification Tablets</label>
-                  </div>
-                  
-                
-                <div class="container" style="padding: 0%;">
-                
-                    <label for="status" class="mt-3">Status:</label>
-                    <select id="status" name="selected_status" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Status</option>
-                        {% for value, label in current_status %}
-                            <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                    
-                
-                    <label for="risk_level" class="mt-3">Risk Level:</label>
-                    <select id="risk_level" name="selected_risk_level" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Risk Level</option>
-                        {% for value, label in risk_level %}
-                        <option value="{{ value }}">{{ label }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                
-                
-                <!-- END FILTER BY CATEGORY -->
-                
-                <div class="padding"></div>
-                
-                <!-- BEGIN FILTER BY AGE -->
-                <br />
-                <h4>By age:</h4>
-                <label for="customRange2" class="form-label">Age Range</label>
-
-                <!-- Age Range Slider -->
-                <input type="range" class="form-range" min="0" max="100" id="customRange2" name="age" value="{{ age|default:100 }}">
-                
-                <!-- Display the selected age dynamically -->
-                <span id="ageValue">{{ age|default:100 }}</span>
-
-                <script>
-                  // Get references to the slider and the span
-                  const ageSlider = document.getElementById('customRange2');
-                  const ageValue = document.getElementById('ageValue');
-              
-                  // Update the span whenever the slider value changes
-                  ageSlider.addEventListener('input', function () {
-                      ageValue.textContent = ageSlider.value;
-                  });
-                </script>
-                <!-- END FILTER BY AGE -->
-                
-                <div class="padding"></div>
-                
-
-              </div>
-              <!-- END FILTERS -->
-              <!-- BEGIN RESULT -->
-              <div class="col-md-9 full-width" >
+            <div class="col-md-10 full-width" >
                 <h1><i class="fa fa-file-o"></i> Overall Victims Statistics</h1>
  
-
-            </form>
-                  <!-- END VICTIM RESULT -->
-                  
-                  <div class="col-md-6 text-right">
-                    <span class="btn-group">
-                      <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
-                      <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
-                    </span>
-                    </div>
   
                 <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue;">
                                   
@@ -287,7 +186,7 @@ $(document).ready(function(){
                          
                         <p>Number of aid packages requested by victim's status</p>
                        
-                        <canvas id="chart" width="500" height="300"></canvas>
+                        <canvas id="chart" width="450" height="300"></canvas>
                         
                         </div>
                     
@@ -309,7 +208,8 @@ $(document).ready(function(){
                 </div>
 
                </div>
-                
+            </div>    
+        </div>
  
 
     
