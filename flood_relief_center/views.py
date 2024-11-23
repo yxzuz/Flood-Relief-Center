@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.db.models.functions import Lower
 from django.views.generic import ListView
 from django.db.models import Q
-from .forms import VictimForm
+from .forms import VictimForm, DonationForm
 from .models import ReliefCenter, Donation, Victim, AffectedArea
 
 # Create your views here.
@@ -40,7 +41,8 @@ class DonationListView(ListView):
 
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(donorName__icontains=search_query) | Q(donation_type__icontains=search_query) | Q(package__aid_type__icontains=search_query))
+            queryset = queryset.filter(Q(donorName__icontains=search_query) | Q(
+                donation_type__icontains=search_query) | Q(package__aid_type__icontains=search_query))
         return queryset
 
     def get_queryset(self):
@@ -49,17 +51,9 @@ class DonationListView(ListView):
         # Get the query parameters from the request
         search_query = self.request.GET.get("search_query", "")
         selected_donation = self.request.GET.get("selected_donation", "")
-        # selected_status = self.request.GET.get("selected_status", "")
-        # selected_risk_level = self.request.GET.get("selected_risk_level", "")
         ordered_by = self.request.GET.get("orderparam", "donorName")
         amount_min = self.request.GET.get("min_amount", None)
         amount_max = self.request.GET.get("max_amount", None)
-
-        # # checklist
-        # selected_needs = self.request.GET.getlist("needs")
-        # if selected_needs:
-        #     queryset = queryset.filter(
-        #         needs__name__in=selected_needs).distinct()
 
         # # Apply search filter
         if search_query:
@@ -69,7 +63,6 @@ class DonationListView(ListView):
         if selected_donation:
             queryset = queryset.filter(donation_type=selected_donation)
 
-
         # # Apply amount range filter (if provided)
         if amount_min:
             queryset = queryset.filter(amount__gte=amount_min)
@@ -77,7 +70,36 @@ class DonationListView(ListView):
             queryset = queryset.filter(amount__lte=amount_max)
         # print(queryset)
         # return queryset
-        return queryset.order_by(ordered_by)
+        if ordered_by == "donorName":
+            queryset = queryset.annotate(lower_name=Lower(
+                "donorName")).order_by("lower_name")
+        else:
+            queryset = queryset.order_by(ordered_by)
+
+        return queryset
+
+
+def edit_donation(request, victimID):
+    victim = Victim.objects.get(victimID=victimID)
+    form = VictimForm(instance=victim)
+    if request.method == 'POST':
+        form = VictimForm(request.POST, instance=victim)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:donations"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/edit_victim.html", context)
+
+
+def add_donation(request):
+    form = DonationForm()
+    if request.method == 'POST':
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:donations"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/add_donation.html", context)
 
 
 class VictimsListView(ListView):
@@ -135,9 +157,13 @@ class VictimsListView(ListView):
         # # Apply age range filter (if provided)
         if age_range:
             queryset = queryset.filter(age__lte=age_range)
-        print(ordered_by)
-        return queryset.order_by(ordered_by)
-        
+        if ordered_by == "name":
+            queryset = queryset.annotate(lower_name=Lower(
+                "name")).order_by("lower_name")
+        else:
+            queryset = queryset.order_by(ordered_by)
+            
+        return queryset
 
 
 def edit_victim(request, victimID):
