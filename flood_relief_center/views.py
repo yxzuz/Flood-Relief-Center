@@ -79,11 +79,11 @@ class DonationListView(ListView):
         return queryset
 
 
-def edit_donation(request, victimID):
-    victim = Victim.objects.get(victimID=victimID)
-    form = VictimForm(instance=victim)
+def edit_donation(request, donationID):
+    victim = Donation.objects.get(donationID=donationID)
+    form = DonationForm(instance=victim)
     if request.method == 'POST':
-        form = VictimForm(request.POST, instance=victim)
+        form = DonationForm(request.POST, instance=victim)
         if form.is_valid():
             form.save()
             return redirect(reverse("flood-relief-center:donations"))
