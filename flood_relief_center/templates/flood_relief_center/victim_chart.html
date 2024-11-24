@@ -120,7 +120,7 @@ $(document).ready(function(){
     const data3 = {
         labels: [
             {% for item in needs_data %}
-                "{{ item.needs }}",
+                "{{ item.needs__name }}",
             {% endfor %}
         ],
         datasets: [{
@@ -177,10 +177,9 @@ $(document).ready(function(){
                 <h1><i class="fa fa-file-o"></i> Overall Victims Statistics</h1>
  
   
-                <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue;">
+                <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue;display:flex; justify-content:space-around;">
                                   
                       
-                      <!-- <canvas id="chart" width="300" height="300"></canvas> -->
                       <div class="chart-container" style="display:inline-block; margin-right: 20px; text-align: center;">
                         <!-- First Chart (Bar chart) -->
                          
@@ -190,7 +189,7 @@ $(document).ready(function(){
                         
                         </div>
                     
-                    <div class="chart-container" style="display:inline-block; margin-left: 60px; text-align: center; ">
+                    <div class="chart-container" style="display:inline-block; text-align: center; ">
                         <!-- Second Chart (Bar chart) -->
                         <p>Victim catagorized by their risk level</p>
                   

@@ -230,10 +230,11 @@ class StatsVictim(ListView):
 
     def needs_data(self):
         needs_data = Victim.objects.values(
-            'needs').annotate(count=Count('victimID'))
+            'needs__name').annotate(count=Count('victimID'))
+        print("Needs data", needs_data)
         needs_data_dict = {level[1]: 0 for level in NEEDS_CHOICES}
         for entry in needs_data:
-            needs_data_dict[entry['needs']] = entry['count']
+            needs_data_dict[entry['needs__name']] = entry['count']
         print(needs_data)
         return needs_data
 
@@ -275,7 +276,7 @@ class AffectedAreaListView(ListView):
             "selected_damage_level", "")
 
         ordered_by = self.request.GET.get("orderparam", "areaID")
-        age_range = self.request.GET.get("age", None)
+
         
         
         min_population = self.request.GET.get("min_population", None)
@@ -300,9 +301,6 @@ class AffectedAreaListView(ListView):
         if selected_damage_level:
             queryset = queryset.filter(damageLevel=selected_damage_level)
 
-        # # Apply age range filter (if provided)
-        if age_range:
-            queryset = queryset.filter(age__lte=age_range)
         if ordered_by == "name":
             queryset = queryset.annotate(lower_name=Lower(
                 "name")).order_by("lower_name")
