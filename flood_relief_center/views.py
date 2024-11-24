@@ -10,8 +10,8 @@ STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
 POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
-AVALIABILITY_STATUS = ['Available', 'Unavaliable']
-TEAM_ID = ['1', '2', '3', '4', '5']
+AVALIABILITY_STATUS = [('available', 'Available'), ('unavailable', 'Unavailable')]
+TEAM_ID = [1, 2, 3, 4, 5]
 
 def index(request):
     return render(request, "flood_relief_center/index.html")
@@ -112,8 +112,12 @@ class VolunteersListView(ListView):
 
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(name__icontains=search_query) | Q(volunteersID__icontains=search_query) | Q(position__icontains=search_query) | Q(
-                center__name__icontains=search_query) | Q(availabilityStatus__icontains=search_query) | Q(teamID__icontains=search_query))
+            queryset = queryset.filter(Q(name__icontains=search_query) |
+                                       Q(volunteerID__icontains=search_query) |
+                                       Q(position__icontains=search_query) |
+                                       Q(center__name__icontains=search_query) |
+                                       Q(availabilityStatus__icontains=search_query))
+                                       # | Q(team_id__icontains=search_query))
         return queryset
 
     def get_queryset(self):
