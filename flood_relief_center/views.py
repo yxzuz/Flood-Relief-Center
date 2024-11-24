@@ -274,8 +274,17 @@ class AffectedAreaListView(ListView):
         selected_damage_level = self.request.GET.get(
             "selected_damage_level", "")
 
-        ordered_by = self.request.GET.get("orderparam", "name")
+        ordered_by = self.request.GET.get("orderparam", "areaID")
         age_range = self.request.GET.get("age", None)
+        
+        
+        min_population = self.request.GET.get("min_population", None)
+        max_population = self.request.GET.get("max_population", None)
+        # # Apply population range filter (if provided)
+        if min_population:
+            queryset = queryset.filter(population__gte=min_population)
+        if max_population:
+            queryset = queryset.filter(population__lte=max_population)
 
         # checklist
         selected_needs = self.request.GET.getlist("needs")
@@ -302,6 +311,33 @@ class AffectedAreaListView(ListView):
 
         return queryset
 
+def edit_affected_area(request, areaID):
+    area = AffectedArea.objects.get(areaID=areaID)
+    form = AffectedAreaForm(instance=area)
+    if request.method == 'POST':
+        form = AffectedAreaForm(request.POST, instance=area)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:affected-areas"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/edit_affected_area.html", context)
+
+def add_affected_area(request):
+    form = AffectedAreaForm()
+    if request.method == 'POST':
+        form = AffectedAreaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:affected-areas"))
+    context = {"form": form}
+
+    return render(request, "flood_relief_center/add_affected_area.html", context)
+
+
+def delete_affected_area(request, areaID):
+    area = AffectedArea.objects.get(areaID=areaID)
+    area.delete()
+    return redirect(reverse("flood-relief-center:affected-areas"))
 
 class ReliefCenterDetailView(ListView):
     model = ReliefCenter

@@ -22,5 +22,9 @@ urlpatterns = [
     
     
     path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas"),
+    path("add-affected-area/", views.add_affected_area, name="add-affected-area"),
+    path("edit-affected-area/<int:areaID>/", views.edit_affected_area, name="edit-affected-area"),
+    path("delete-affected-area/<int:areaID>/", views.delete_affected_area, name="delete-affected-area"),
+    
     
 ]

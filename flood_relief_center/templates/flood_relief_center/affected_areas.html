@@ -74,11 +74,11 @@
                 <!-- BEGIN FILTER BY AGE -->
                 <h4>By population:</h4>
                 <label for="pop_min" class="form-label">Min population:</label>
-                <input type="number" id="amount_min" name="pop_amount" min="0" max="999999999999" step="1">
+                <input type="number" id="amount_min" name="min_population" min="0" max="999999999999" step="1">
                 <br />
                 <br />
                 <label for="pop_max" class="form-label">Max population:</label>
-                <input type="number" id="amount_max" name="pop_amount" min="0" max="999999999999" step="1">
+                <input type="number" id="amount_max" name="max_population" min="0" max="999999999999" step="1">
  
                 
                 
@@ -88,7 +88,7 @@
               <div class="col-md-9 full-width" >
                 <h1><i class="fa fa-file-o"></i> All affected areas</h1>
                 <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
-                  <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-donation' %}" role="button">Add</a></div>
+                  <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-affected-area' %}" role="button">Add</a></div>
                   <hr>
           
                 <!-- BEGIN SEARCH INPUT -->
@@ -108,6 +108,7 @@
                   <div class="col-sm-2">
                     <label for="orderparam" class="mt-3">Order by:</label>
                     <select id="orderparam" name="orderparam" class="form-control">
+                        <option value="areaID" {% if orderparam == 'areaID' %}selected{% endif %}>ID</option>
                         <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
                         <option value="population" {% if orderparam == 'population' %}selected{% endif %}>Population</option>
                         <option value="damageLevel" {% if orderparam == 'damageLevel' %}selected{% endif %}>Damage level</option>
@@ -151,7 +152,19 @@
                                           {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
                                       {% endfor %}
                                   </td>
-                              </tr>
+                                  <td>
+                                    <a 
+                                    href="{% url 'flood-relief-center:edit-affected-area' area.areaID %}"
+                                    style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                    Edit
+                                    </a>
+                                    <a 
+                                      href="{% url 'flood-relief-center:delete-affected-area' area.areaID %}"" 
+                                      style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
+                                    >
+                                      Delete
+                                    </a>
+                                  </tr>
                           {% endfor %}
               
                       </tbody>

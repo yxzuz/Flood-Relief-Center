@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import ReliefCenter, Victim, Donation
+from .models import ReliefCenter, Victim, Donation, AffectedArea
 
 
 class VictimForm(ModelForm):
@@ -10,4 +10,9 @@ class VictimForm(ModelForm):
 class DonationForm(ModelForm):
     class Meta:
         model = Donation
+        fields = "__all__"
+        
+class AffectedAreaForm(ModelForm):
+    class Meta:
+        model = AffectedArea
         fields = "__all__"
