@@ -55,8 +55,8 @@ def add_relief_center(request):
     return render(request, "flood_relief_center/add_relief_center.html", context)
 
 
-def delete_relief_center(request, areaID):
-    area = ReliefCenter.objects.get(areaID=areaID)
+def delete_relief_center(request, centerID):
+    area = ReliefCenter.objects.get(centerID=centerID)
     area.delete()
     return redirect(reverse("flood-relief-center:relief-centers"))
 
