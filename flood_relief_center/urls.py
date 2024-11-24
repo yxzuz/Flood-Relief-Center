@@ -31,5 +31,7 @@ urlpatterns = [
     path("edit-affected-area/<int:areaID>/", views.edit_affected_area, name="edit-affected-area"),
     path("delete-affected-area/<int:areaID>/", views.delete_affected_area, name="delete-affected-area"),
     
+    path("rescue-teams/", views.RescueTeamsListView.as_view(), name="rescue-teams"),
+    path("add-rescue_team/",views.add_rescue_team, name="add-rescue-teams" )
     
 ]
