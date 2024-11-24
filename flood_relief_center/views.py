@@ -80,7 +80,7 @@ class DonationListView(ListView):
     def get_search_query(self, queryset, search_query):
         if search_query:
             queryset = queryset.filter(Q(donorName__icontains=search_query) | Q(
-                donation_type__icontains=search_query) | Q(package__aid_type__icontains=search_query))
+                donation_type__icontains=search_query))
         return queryset
 
     def get_queryset(self):
