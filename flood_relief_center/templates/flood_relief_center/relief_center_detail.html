@@ -89,12 +89,6 @@ $(document).ready(function(){
     <div class="container">
         <!-- Example row of columns -->
         <div class="row">
-            <!-- <div class="col-md-4">
-                <h2>Finance</h2>
-                <p style="border: black solid;">
-                    <canvas id="chart" width="200" height="150"></canvas> </p>
-             
-            </div> -->
 
             <div class="col-md-4">
                 <h2>Volunteer</h2>
@@ -104,11 +98,11 @@ $(document).ready(function(){
                 <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
             </div>
             <div class="col-md-4">
-                <h2>Heading</h2>
+                <h2>Rescue teams</h2>
                 <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
                     porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
                     ut fermentum massa justo sit amet risus.</p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:rescue-teams' %}" role="button">View details &raquo;</a></p>
             </div>
         </div>
 
