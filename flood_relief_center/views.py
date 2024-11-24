@@ -10,7 +10,7 @@ STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
 POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
-AVALIABILITY_STATUS = ['Avaliable', 'Not Avaliable']
+AVALIABILITY_STATUS = ['Available', 'Unavaliable']
 TEAM_ID = ['1', '2', '3', '4', '5']
 
 def index(request):
@@ -113,7 +113,7 @@ class VolunteersListView(ListView):
     def get_search_query(self, queryset, search_query):
         if search_query:
             queryset = queryset.filter(Q(name__icontains=search_query) | Q(volunteersID__icontains=search_query) | Q(position__icontains=search_query) | Q(
-                center__name__icontains=search_query) | Q(avaliabilityStatus__icontains=search_query) | Q(teamID__icontains=search_query))
+                center__name__icontains=search_query) | Q(availabilityStatus__icontains=search_query) | Q(teamID__icontains=search_query))
         return queryset
 
     def get_queryset(self):
@@ -142,7 +142,7 @@ class VolunteersListView(ListView):
 
         # Apply avaliability status filter
         if selected_avaliability_status:
-            queryset = queryset.filter(avaliabilityStatus=selected_avaliability_status)
+            queryset = queryset.filter(availabilityStatus=selected_avaliability_status)
 
         # Apply team id status filter
         if selected_team_id:

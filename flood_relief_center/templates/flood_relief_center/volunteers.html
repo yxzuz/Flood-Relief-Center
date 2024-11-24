@@ -86,10 +86,11 @@
                                         <div class="col-sm-2">
                                         <label for="orderparam" class="mt-3">Order by:</label>
                                         <select id="orderparam" name="orderparam" class="form-control">
+                                            <option value="name" {% if orderparam == 'volunteerID' %}selected{% endif %}>Volunteer ID</option>
                                             <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
                                             <option value="age" {% if orderparam == 'position' %}selected{% endif %}>Position</option>
-                                            <option value="familyMembers" {% if orderparam == 'avaliability_status' %}selected{% endif %}>Avaliability Status</option>
-                                            <option value="familyMembers" {% if orderparam == 'team_id' %}selected{% endif %}>Team ID</option>
+                                            <option value="familyMembers" {% if orderparam == 'avaliabilityStatus' %}selected{% endif %}>Avaliability Status</option>
+                                            <option value="familyMembers" {% if orderparam == 'teamID' %}selected{% endif %}>Team ID</option>
                                         </select>
                                         </div>
                                     </div>
@@ -118,8 +119,8 @@
                                                         <td>{{ volunteer.volunteerID }}</td> <!-- Assuming volunteerID should be volunteer.id -->
                                                         <td>{{ volunteer.name }}</td>
                                                         <td>{{ volunteer.position }}</td>
-                                                        <td>{{ volunteer.availability_status }}</td> <!-- Correct spelling -->
-                                                        <td>{{ volunteer.teamID }}</td>
+                                                        <td>{{ volunteer.availabilityStatus }}</td> <!-- Correct spelling -->
+                                                        <td>{{ volunteer.team_id }}</td>
                                                     </tr>
                                                 {% endfor %}
 
