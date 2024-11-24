@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.db.models import Count
+from django.db.models import Count, Sum, Q, Max, Min
 from django.db.models.functions import Lower
 from django.views.generic import ListView
-from django.db.models import Q
 from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm
-from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES
+from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Finance
 
 # Create your views here.
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
@@ -15,6 +14,8 @@ DONATION_TYPE = [('money', 'Money'), ('supplies',
                                       'Supplies'), ('other', 'Other')]
 DAMAGE_LEVEL = [('minor', 'Minor'), ('moderate',
                                      'Moderate'), ('severe', 'Severe')]
+FINANCE_TYPE = [('donation', 'Donation'),
+                ('grant', 'Grant'), ('expense', 'Expense')]
 
 
 def get_center_names():
@@ -368,6 +369,42 @@ class ReliefCenterDetailView(ListView):
     model = ReliefCenter
     context_object_name = "relief_center_detail"
     template_name = "flood_relief_center/relief_center_detail.html"
+
+    def financial_status_data(self):
+        center_id = self.kwargs.get('centerID')
+        financial_status_data = Finance.objects.filter(center__centerID=center_id).values(
+            'finance_type').annotate(total_amount=Sum('amount'))
+        # print("Needs data", needs_data)
+        # needs_data_dict = {level[1]: 0 for level in NEEDS_CHOICES}
+        # for entry in needs_data:
+        #     needs_data_dict[entry['needs__name']] = entry['count']
+        print(financial_status_data)
+        return financial_status_data
+
+    def max_min_financial_data(self):
+        center_id = self.kwargs.get('centerID')
+
+        # Aggregate maximum and minimum amounts for the given center
+        max_min_data = Finance.objects.filter(center__centerID=center_id).values(
+            'finance_type').aggregate(
+            donation_max=Max('amount', filter=Q(finance_type='donation')),
+            donation_min=Min('amount', filter=Q(finance_type='donation')),
+            grant_max=Max('amount', filter=Q(finance_type='grant')),
+            grant_min=Min('amount', filter=Q(finance_type='grant')),
+            expense_max=Max('amount', filter=Q(finance_type='expense')),
+            expense_min=Min('amount', filter=Q(finance_type='expense'))
+        )
+
+        print("Filtered financial data:", max_min_data)
+        return max_min_data
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["financial_status_data"] = self.financial_status_data()
+        context["max_min_financial_data"] = self.max_min_financial_data()
+
+        return context
 
     def get_queryset(self):
         # Filter by centerID
