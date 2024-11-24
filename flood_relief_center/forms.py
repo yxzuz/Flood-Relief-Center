@@ -16,3 +16,9 @@ class AffectedAreaForm(ModelForm):
     class Meta:
         model = AffectedArea
         fields = "__all__"
+        
+        
+class ReliefCenterForm(ModelForm):
+    class Meta:
+        model = ReliefCenter
+        fields = "__all__"

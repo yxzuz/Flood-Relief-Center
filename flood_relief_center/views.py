@@ -4,7 +4,7 @@ from django.db.models import Count
 from django.db.models.functions import Lower
 from django.views.generic import ListView
 from django.db.models import Q
-from .forms import VictimForm, DonationForm, AffectedAreaForm
+from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm
 from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES
 
 # Create your views here.
@@ -29,6 +29,36 @@ class ReliefCentersListView(ListView):
     model = ReliefCenter
     context_object_name = "relief_centers_lists"
     template_name = "flood_relief_center/relief_centers.html"
+
+
+def edit_relief_center(request, centerID):
+    area = ReliefCenter.objects.get(centerID=centerID)
+    form = ReliefCenterForm(instance=area)
+    if request.method == 'POST':
+        form = ReliefCenterForm(request.POST, instance=area)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:relief-centers"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/edit_relief_center.html", context)
+
+
+def add_relief_center(request):
+    form = ReliefCenterForm()
+    if request.method == 'POST':
+        form = ReliefCenterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:relief-centers"))
+    context = {"form": form}
+
+    return render(request, "flood_relief_center/add_relief_center.html", context)
+
+
+def delete_relief_center(request, areaID):
+    area = ReliefCenter.objects.get(areaID=areaID)
+    area.delete()
+    return redirect(reverse("flood-relief-center:relief-centers"))
 
 
 class DonationListView(ListView):
@@ -247,10 +277,6 @@ class StatsVictim(ListView):
         context["risk_level"] = RISK_LEVEL
         return context
 
-# def stats_victims(request):
-#     context = {}
-#     return render(request, "flood_relief_center/victim_chart.html")
-
 
 class AffectedAreaListView(ListView):
     model = AffectedArea
@@ -277,8 +303,6 @@ class AffectedAreaListView(ListView):
 
         ordered_by = self.request.GET.get("orderparam", "areaID")
 
-        
-        
         min_population = self.request.GET.get("min_population", None)
         max_population = self.request.GET.get("max_population", None)
         # # Apply population range filter (if provided)
@@ -309,6 +333,7 @@ class AffectedAreaListView(ListView):
 
         return queryset
 
+
 def edit_affected_area(request, areaID):
     area = AffectedArea.objects.get(areaID=areaID)
     form = AffectedAreaForm(instance=area)
@@ -319,6 +344,7 @@ def edit_affected_area(request, areaID):
             return redirect(reverse("flood-relief-center:affected-areas"))
     context = {"form": form}
     return render(request, "flood_relief_center/edit_affected_area.html", context)
+
 
 def add_affected_area(request):
     form = AffectedAreaForm()
@@ -336,6 +362,7 @@ def delete_affected_area(request, areaID):
     area = AffectedArea.objects.get(areaID=areaID)
     area.delete()
     return redirect(reverse("flood-relief-center:affected-areas"))
+
 
 class ReliefCenterDetailView(ListView):
     model = ReliefCenter
