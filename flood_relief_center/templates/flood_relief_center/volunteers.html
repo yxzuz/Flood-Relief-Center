@@ -68,6 +68,8 @@
                                 <!-- BEGIN RESULT -->
                                 <div class="col-md-9 full-width">
                                     <h1><i class="fa fa-file-o"></i> All volunteers</h1>
+                                    <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
+                                        <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-volunteer' %}" role="button">Add</a></div>
                                     <hr>
 
                                     <!-- Search Input-->
@@ -115,9 +117,10 @@
                                                     <th scope="col">Volunteer ID</th>
                                                     <th scope="col">Name</th>
                                                     <th scope="col">Position</th>
-<!--                                                    <th scope="col">Center</th>-->
+                                                    <th scope="col">Center</th>
                                                     <th scope="col">Availability Status</th>
                                                     <th scope="col">Team ID</th>
+                                                    <th scope="col">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -128,9 +131,24 @@
                                                         <td>{{ volunteer.volunteerID }}</td> <!-- Assuming volunteerID should be volunteer.id -->
                                                         <td>{{ volunteer.name }}</td>
                                                         <td>{{ volunteer.position }}</td>
+                                                        <td> {{ volunteer.center }}</td>
                                                         <td>{{ volunteer.availabilityStatus }}</td> <!-- Correct spelling -->
                                                         <td>{{ volunteer.team_id }}</td>
+                                                        <td>
+                                                          <a
+                                                          href="{% url 'flood-relief-center:edit-volunteer' volunteer.volunteerID %}"
+                                                          style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                                          Edit
+                                                          </a>
+                                                          <a
+                                                            href="{% url 'flood-relief-center:delete-volunteer' volunteer.volunteerID %}"
+                                                            style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
+                                                          >
+                                                            Delete
+                                                          </a>
+                                                        </td>
                                                     </tr>
+
                                                 {% endfor %}
 
                                             </tbody>
