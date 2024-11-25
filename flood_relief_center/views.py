@@ -169,7 +169,7 @@ class VictimsListView(ListView):
 
         # Get the query parameters from the request
         search_query = self.request.GET.get("search_query", "")
-        selected_donation = self.request.GET.get("selected_donation", "")
+        selected_center = self.request.GET.get("selected_center", "")
         selected_status = self.request.GET.get("selected_status", "")
         selected_risk_level = self.request.GET.get("selected_risk_level", "")
 
@@ -187,8 +187,8 @@ class VictimsListView(ListView):
             queryset = self.get_search_query(queryset, search_query)
 
         # Apply center filter
-        if selected_donation:
-            queryset = queryset.filter(center__name=selected_donation)
+        if selected_center:
+            queryset = queryset.filter(center__name=selected_center)
 
         # Apply status filter
         if selected_status:
