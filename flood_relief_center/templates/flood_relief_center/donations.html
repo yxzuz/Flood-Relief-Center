@@ -1,45 +1,184 @@
 {% extends 'base.html' %}
+{% load static %}
+<head>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  </head>
+
 
 {% block title %} Donations {% endblock %}
 
+<body>
 {% block content %}
-
 <main role="main">
+    <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
+    <div class="row">
+      <!-- BEGIN SEARCH RESULT -->
+      <div class="col-md-12">
+        <div class="grid search">
+          <div class="grid-body">
+            <div class="row">
+              <!-- BEGIN FILTERS -->
+              <div class="col-md-2">
+                <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
+                <hr>
+                
+                <!-- BEGIN FILTER BY CATEGORY -->
+                <form method="GET" action=".">
 
-<br />
-<br />
-<br />
-<br />
-<h1>All Donations</h1>
+                <div class="container" style="padding: 0%;">
 
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Donor Name</th>
-            <th scope="col">Type</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Package</th>
-            <th scope="col">Donation Date</th>
-          </tr>
-        </thead>
-        <tbody>
+                  <h4  style="margin-bottom:0%;">By donation types:</h4>
+                    <label for="status" class="mt-3">Donation Type:</label>
+                    <select id="status" name="selected_donation" class="form-control">
+                        <!-- Null option at the top -->
+                        <option value="" selected disabled>Select Status</option>
+                        {% for value, label in donation_type %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                
+                </div>
 
-            {% for donation in donation_lists %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>  <!-- This will automatically give the row number -->
-                    <td>{{ donation.donorName }}</td>
-                    <td>{{ donation.donation_type }}</td>
-                    <td>{{ donation.amount }}</td>
-                    <td>{{ donation.package }}</td>
-                    <td>{{ donation.donationDate }}</td>
-                </tr>
-            {% endfor %}
+                <!-- END FILTER BY CATEGORY -->
+                
+                <!-- BEGIN FILTER BY AGE -->
+                <br />
+                <h4>By amount:</h4>
+                <label for="amount_min" class="form-label">Min amount:</label>
+                <input type="number" id="amount_min" name="min_amount" min="0" max="999999999999" step="1">
+                <br />
+                <br />
+                <label for="amount_max" class="form-label">Max amount:</label>
+                <input type="number" id="amount_max" name="max_amount" min="0" max="999999999999" step="1">
+ 
+                
+                  <!-- <label for="date">Choose a date:</label>
+                  <input type="date" id="date" name="date">
+                  <input type="submit"> -->
+                
+              </div>
+              <!-- END FILTERS -->
+              <!-- BEGIN RESULT -->
+              <div class="col-md-9 full-width" >
+                <h1><i class="fa fa-file-o"></i> All donations</h1>
+                <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
+                  <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-donation' %}" role="button">Add</a></div>
+                  <hr>
+          
+                <!-- BEGIN SEARCH INPUT -->
+                <div class="input-group">
+                  <input type="text" class="form-control" name="search_query" value="">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
+                  </span>
+                </div>
+                <!-- END SEARCH INPUT -->
+                <p>Showing all results of query</p>
+                
+                <div class="padding"></div>
+                
+                <div class="row">
+                  <!-- BEGIN VICTIM RESULT -->
+                  <div class="col-sm-2">
+                    <label for="orderparam" class="mt-3">Order by:</label>
+                    <select id="orderparam" name="orderparam" class="form-control">
+                        <option value="donorName" {% if orderparam == 'donorName' %}selected{% endif %}>Name</option>
+                        <option value="amount" {% if orderparam == 'amount' %}selected{% endif %}>Amount</option>
+                        <option value="donationDate" {% if orderparam == 'donationDate' %}selected{% endif %}>Date</option>
+                    </select>
+                  </div>
+            </form>
+                  <!-- END DONATIONS RESULT -->
+                  
+                  <div class="col-md-6 text-right">
+                    <span class="btn-group">
+                      <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
+                      <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- BEGIN TABLE RESULT -->
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Donor Name</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Amount</th>
+                          <th scope="col">Donation Date</th>
+                          <th scope="col">Delete</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+              
+                          {% for donation in donation_lists %}
+                              <tr>
+                                  <th scope="row">{{ forloop.counter }}</th>  <!-- This will automatically give the row number -->
+                                  <td>{{ donation.donorName }}</td>
+                                  <td>{{ donation.donation_type }}</td>
+                                  <td>{{ donation.amount }}</td>
+                                  <td>{{ donation.donationDate }}</td>
+                                  <!-- <td><a href="{% url 'flood-relief-center:delete-donation' donation.donationID  %}">Delete</a></td> -->
+                                  <td>
+                                    <a 
+                                    href="{% url 'flood-relief-center:edit-donation' donation.donationID %}" 
+                                    style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                    Edit
+                                    </a>
+                                    <a 
+                                      href="{% url 'flood-relief-center:delete-donation' donation.donationID %}" 
+                                      style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
+                                    >
+                                      Delete
+                                    </a>
+                                  </td>
+                                  
+                              </tr>
+                          {% endfor %}
+              
+                      </tbody>
+                    </table>
+              
+ 
+                  </tbody></table>
+                </div>
+                <!-- END TABLE RESULT -->
+                
 
-        </tbody>
-      </table>
+              <!-- END RESULT -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END SEARCH RESULT -->
+    </div>
+    </div>
 
+
+
+        <!-- <div class="container" style="display: flex; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%;">
+        <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-victim' %}" role="button">Add</a></div>
+ -->
+
+        
+
+
+    
+    
 </main>
 
 
 {% endblock %}
+</body>

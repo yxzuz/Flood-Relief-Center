@@ -2,6 +2,67 @@
 
 {% block title %} Relief Center Detail {% endblock %}
 
+{% block scripts %}
+<script>
+$(document).ready(function(){
+    // Data for the chart
+    const data = {
+        labels: [
+            {% for item in financial_status_data %}
+                "{{ item.finance_type }}",
+            {% endfor %}    
+        ],
+        datasets: [{
+            label: 'total number of aid packages',
+            data: [
+                {% for item in financial_status_data %}
+                    "{{ item.total_amount }}",
+                {% endfor %}
+            ],  
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)'
+            ],
+            borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    // Get the canvas element by ID and create the chart
+    const ctx = document.getElementById('chart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',  // Choose the type of chart: 'bar', 'line', 'pie', etc.
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true  // Ensure the y-axis starts at zero
+                }
+            }
+        }
+    });
+
+
+
+});
+</script>
+{% endblock %}
+
+
 {% block content %}
 
 <main role="main">
@@ -9,15 +70,15 @@
 <br />
 <br />
 <br />
-<h1>Detail</h1>
-{% for center in relief_center_detail %}
-    <p>{{center.name}}</p> 
-{% endfor %}
 
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Relief Centers</h1>
+            <div class="display-3">
+                {% for center in relief_center_detail %}
+                    {{center.name}}
+                {% endfor %}</h1>
+            </div>
             <p>This is a template for a simple marketing or informational website. It includes a large callout called a
                 jumbotron and three supporting pieces of content. Use it as a starting point to create something more
                 unique.</p>
@@ -28,32 +89,71 @@
     <div class="container">
         <!-- Example row of columns -->
         <div class="row">
+
             <div class="col-md-4">
-                <h2>Donations</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
-                    mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
-                    mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:donations' %}"  role="button">View details &raquo;</a></p>
-            </div>
-            <div class="col-md-4">
-                <h2>Victims</h2>
+                <h2>Volunteer</h2>
                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
                     mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
                     mollis euismod. Donec sed odio dui. </p>
                 <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
             </div>
             <div class="col-md-4">
-                <h2>Heading</h2>
+                <h2>Rescue teams</h2>
                 <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
                     porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
                     ut fermentum massa justo sit amet risus.</p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:rescue-teams' %}" role="button">View details &raquo;</a></p>
             </div>
         </div>
 
         <hr>
+        <div class="display-4">
+            Finacial status
+        </div>
+        <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue; text-align: center; display:flex; justify-content:space-evenly; align-items:center;">
+            <div class="chart-container" style="display:inline-block; text-align: center; ">
+                <p>Finance tracking of                 
+                    {% for center in relief_center_detail %}
+                    {{center.name}}
+                {% endfor %}</p>
+          
+                <canvas id="chart" width="400" height="300"></canvas>
+            </div>
+            <div >
+
+                  <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Financial type</th>
+                            <th scope="col">Max</th>
+                            <th scope="col">Min</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Donation</th>
+                            <td>{{ max_min_financial_data.donation_max }}</td>
+                            <td>{{ max_min_financial_data.donation_min }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Grant</th>
+                            <td>{{ max_min_financial_data.grant_max }}</td>
+                            <td>{{ max_min_financial_data.grant_min }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Expense</th>
+                            <td>{{ max_min_financial_data.expense_max }}</td>
+                            <td>{{ max_min_financial_data.expense_min }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+                
+        </div>
 
     </div> <!-- /container -->
+
 
 </main>
 

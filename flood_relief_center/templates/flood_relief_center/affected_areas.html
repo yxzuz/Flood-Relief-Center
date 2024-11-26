@@ -13,44 +13,181 @@
 
 {% block title %} Affected Areas {% endblock %}
 
-<body>
+
+
+
+</body>
 {% block content %}
 <main role="main">
-<br />
-<br />
-<br />
-<br />
-<h1>All affected areas</h1>
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Area ID</th>
-            <th scope="col">Area name</th>
-            <th scope="col">Population</th>
-            <th scope="col">Damage level</th>
-            <th scope="col">Needs</th>
-          </tr>
-        </thead>
-        <tbody>
+    <div class="container-fluid" style="margin-top:80px; margin-left:20px;">
+    <div class="row">
+      <!-- BEGIN SEARCH RESULT -->
+      <div class="col-md-12">
+        <div class="grid search">
+          <div class="grid-body">
+            <div class="row">
+              <!-- BEGIN FILTERS -->
+              <div class="col-md-2">
+                <h2 class="grid-title"><i class="fa fa-filter"></i> Filters</h2>
+                <hr>
+                
+                <!-- BEGIN FILTER BY CATEGORY -->
+                <form method="GET" action=".">
 
-            {% for area in affected_area_lists %}
-                <tr>
-                    <td>{{ area.areaID }}</td>
-                    <td>{{ area.name }}</td>
-                    <td>{{ area.population }}</td>
-                    <td>{{ area.damageLevel }}</td>
-                    <td>
-                        {% for need in area.needs.all %}
-                            {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
+                  <h4>By Needs:</h4>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="food and water"> Food and Water</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="shelter"> Shelter</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="clothing"> Clothing</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="medical supplies"> Medical Supplies</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="medical attention"> Medical Attention</label>
+                  </div>
+                  <div class="checkbox">
+                    <label><input type="checkbox" class="icheck" name="needs" value="water purification tablets"> Water Purification Tablets</label>
+                  </div>
+                  <br />
+
+                <div class="container" style="padding: 0%;">
+                  <h4  style="margin-bottom:0%;">By damage level:</h4>
+                    <label for="status" class="mt-3">Damage level:</label>
+                    <select id="status" name="selected_damage_level" class="form-control">
+                        <!-- Null option at the top -->
+                        <option value="" selected disabled>Select Status</option>
+                        {% for value, label in damage_level %}
+                            <option value="{{ value }}">{{ label }}</option>
                         {% endfor %}
-                    </td>
-                </tr>
-            {% endfor %}
+                    </select>
+                    
+                
+                </div>
 
-        </tbody>
-      </table>
+                <!-- END FILTER BY CATEGORY -->
+                
+                <!-- BEGIN FILTER BY AGE -->
+                <h4>By population:</h4>
+                <label for="pop_min" class="form-label">Min population:</label>
+                <input type="number" id="amount_min" name="min_population" min="0" max="999999999999" step="1">
+                <br />
+                <br />
+                <label for="pop_max" class="form-label">Max population:</label>
+                <input type="number" id="amount_max" name="max_population" min="0" max="999999999999" step="1">
+ 
+                
+                
+              </div>
+              <!-- END FILTERS -->
+              <!-- BEGIN RESULT -->
+              <div class="col-md-9 full-width" >
+                <h1><i class="fa fa-file-o"></i> All affected areas</h1>
+                <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
+                  <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-affected-area' %}" role="button">Add</a></div>
+                  <hr>
+          
+                <!-- BEGIN SEARCH INPUT -->
+                <div class="input-group">
+                  <input type="text" class="form-control" name="search_query" value="">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
+                  </span>
+                </div>
+                <!-- END SEARCH INPUT -->
+                <p>Showing all results of query</p>
+                
+                <div class="padding"></div>
+                
+                <div class="row">
+                  <!-- BEGIN VICTIM RESULT -->
+                  <div class="col-sm-2">
+                    <label for="orderparam" class="mt-3">Order by:</label>
+                    <select id="orderparam" name="orderparam" class="form-control">
+                        <option value="areaID" {% if orderparam == 'areaID' %}selected{% endif %}>ID</option>
+                        <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
+                        <option value="population" {% if orderparam == 'population' %}selected{% endif %}>Population</option>
+                        <option value="damageLevel" {% if orderparam == 'damageLevel' %}selected{% endif %}>Damage level</option>
+                    </select>
+                  </div>
+            </form>
+                  <!-- END DONATIONS RESULT -->
+                  
+                  <div class="col-md-6 text-right">
+                    <span class="btn-group">
+                      <button type="button" class="btn btn-default active"><i class="fa fa-list"></i></button>
+                      <button type="button" class="btn btn-default"><i class="fa fa-th"></i></button>
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- BEGIN TABLE RESULT -->
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Area ID</th>
+                          <th scope="col">Area name</th>
+                          <th scope="col">Population</th>
+                          <th scope="col">Damage level</th>
+                          <th scope="col">Needs</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+              
+                          {% for area in affected_area_lists %}
+                              <tr>
+                                  <td>{{ area.areaID }}</td>
+                                  <td>{{ area.name }}</td>
+                                  <td>{{ area.population }}</td>
+                                  <td>{{ area.damageLevel }}</td>
+                                  <td>
+                                      {% for need in area.needs.all %}
+                                          {{ need.get_name_display }}{% if not forloop.last %}, {% endif %}
+                                      {% endfor %}
+                                  </td>
+                                  <td>
+                                    <a 
+                                    href="{% url 'flood-relief-center:edit-affected-area' area.areaID %}"
+                                    style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                    Edit
+                                    </a>
+                                    <a 
+                                      href="{% url 'flood-relief-center:delete-affected-area' area.areaID %}"" 
+                                      style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
+                                    >
+                                      Delete
+                                    </a>
+                                  </tr>
+                          {% endfor %}
+              
+                      </tbody>
+                    </table>
+              
+ 
+                  </tbody></table>
+                </div>
+                <!-- END TABLE RESULT -->
+                
 
-    
+              <!-- END RESULT -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END SEARCH RESULT -->
+    </div>
+    </div>
+
+
+
+
     
     
 </main>
