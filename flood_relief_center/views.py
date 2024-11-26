@@ -405,7 +405,6 @@ class VolunteersListView(ListView):
             # | Q(team_id__icontains=search_query))
         return queryset
 
-
     def get_queryset(self):
 
         # Get the query parameters from the request
@@ -413,12 +412,12 @@ class VolunteersListView(ListView):
         search_query = self.request.GET.get("search_query", "")
         selected_position = self.request.GET.get("selected_position", "")
         selected_avaliability_status = self.request.GET.get("selected_availability_status", "")
-        selected_team_id = self.request.GET.get("selected_teamID", "")
+        selected_team_id = self.request.GET.get("selected_team_id", "")
         ordered_by = self.request.GET.get("orderparam", "name")
         # age_range = self.request.GET.get("age_range", None)
 
-        print("searchq" ,search_query)
-        print("elect" ,selected_position)
+        print("searchq", search_query)
+        print("elect", selected_position)
         queryset = (Volunteer.objects.all().filter(center__centerID=centerID))
 
         # Apply search filter
@@ -435,7 +434,7 @@ class VolunteersListView(ListView):
 
         # Apply team id status filter
         if selected_team_id:
-            queryset = queryset.filter(teamID=selected_team_id)
+            queryset = queryset.filter(team_id=int(selected_team_id))
 
         print(queryset)
         return queryset.order_by(ordered_by)
@@ -457,21 +456,20 @@ def edit_volunteer(request, volunteerID):
     return render(request, "flood_relief_center/edit_volunteer.html", context)
 
 
-def add_volunteer(self, request):
+def add_volunteer(request, center_id):
     form = VolunteerForm()
     if request.method == 'POST':
-        # print(request.POST)
+        # print(request.POST)                                                               ~
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            center_id = self.kwargs.get('centerID')
-            return redirect(reverse("flood-relief-center:volunteers",
-                                    kwargs={'centerID': center_id}))
-    context = {"form": form}
+            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': center_id}))
+
+    context = {"form": form, "centerID": center_id}
     return render(request, "flood_relief_center/add_volunteer.html", context)
 
 
-def delete_volunteer(request, volunteerID):
+def delete_volunteer(volunteerID):
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     volunteer.delete()
     return redirect(reverse("flood-relief-center:volunteer"))

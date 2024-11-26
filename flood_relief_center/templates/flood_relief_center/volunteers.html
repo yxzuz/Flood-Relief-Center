@@ -60,26 +60,40 @@
                                         <input type="range" class="form-range" min="0" max="100" id="customRange2" value="{{ age }}">
                                         <span id="ageValue">{{ age }}</span>
 
-
-                                    
-
                                 </div> <!-- END FILTERS -->
 
-                                <!-- BEGIN RESULT -->
-                                <div class="col-md-9 full-width">
-                                    <h1><i class="fa fa-file-o"></i> All volunteers</h1>
-                                    <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
-                                        <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;" href="{% url 'flood-relief-center:add-volunteer' %}" role="button">Add</a></div>
-                                    <hr>
 
-                                    <!-- Search Input-->
+                                    <div class="col-md-9 full-width" >
+                                        <h1><i class="fa fa-file-o"></i> All Volunteers</h1>
+
+                                    <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
+                                        {% for center in relief_center_detail %}
+                                            <a class="btn btn-add"
+                                               style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;"
+                                               href="{% url 'flood-relief-center:add-volunteer' center.centerID %}"
+                                               role="button">Add</a>
+                                        {% endfor %}
+                                    </div><hr>
+
+                                        <!-- Search Input -->
+
                                     <div class="input-group">
-                                      <input type="text" class="form-control" name="search_query" value="">
-                                      <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
-                                      </span>
+                                        <input type="text" class="form-control" name="search_query" value="">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i>search</button>
+                                            </span>
                                     </div>
-                                </form> <!-- Close form here -->
+
+<!--                                        {% for center in relief_center_detail %} <form method="GET" action="{% url 'flood-relief-center:edit-volunteers' %}">{% endfor %}-->
+<!--                                            <div class="input-group">-->
+<!--                                                <input type="text" class="form-control" name="search_query" placeholder="Search volunteers..." value="">-->
+<!--                                                <span class="input-group-btn">-->
+<!--                                                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Search</button>-->
+<!--                                                </span>-->
+<!--                                            </div>-->
+<!--                                        </form> &lt;!&ndash; Close form here &ndash;&gt;-->
+<!--                                    </div>-->
+
                                     <p></p>
                                     <p>Showing all results of query</p>
 <!--                                    <div class="padding"></div>-->
