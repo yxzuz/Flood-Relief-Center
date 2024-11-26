@@ -48,6 +48,29 @@ class ReliefCentersListView(ListView):
     context_object_name = "relief_centers_lists"
     template_name = "flood_relief_center/relief_centers.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get("search_query", "")
+        return context
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query) |
+                                       Q(location__icontains=search_query))
+        return queryset
+
+    def get_queryset(self):
+        queryset = ReliefCenter.objects.all()
+
+        centerID = self.kwargs.get('centerID')
+        search_query = self.request.GET.get("search_query", "")
+
+        # # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+        return queryset
+
+
 
 def edit_relief_center(request, centerID):
     area = ReliefCenter.objects.get(centerID=centerID)
