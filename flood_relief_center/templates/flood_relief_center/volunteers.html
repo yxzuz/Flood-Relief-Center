@@ -67,7 +67,7 @@
                                         <h1><i class="fa fa-file-o"></i> All Volunteers</h1>
 
                                     <div class="container" style="display: inline-block; justify-content: flex-end; align-items:flex-end; width: 100%; margin-right:0%; padding-left: 0px">
-                                        {% for center in relief_center_detail %}
+                                        {% for center in relief_center %}
                                             <a class="btn btn-add"
                                                style="background-color: rgb(126, 200, 118); color: white; border:0px; font-size: 20px;"
                                                href="{% url 'flood-relief-center:add-volunteer' center.centerID %}"
