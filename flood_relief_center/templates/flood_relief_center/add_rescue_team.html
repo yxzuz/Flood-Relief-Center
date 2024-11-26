@@ -6,7 +6,7 @@
 <br/>
 <div class="container mt-5">
     <h2 class="text-center">Add Rescue Teams</h2>
-    <form method="POST" action="{% url 'flood-relief-center:add-rescue-teams' %}" class="mt-4">
+    <form method="POST" action="{% url 'flood-relief-center:add-rescue-teams' centerID %}" class="mt-4">
         {% csrf_token %}
         
         <!-- Loop through form fields and render each one in a separate row -->

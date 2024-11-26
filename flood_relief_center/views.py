@@ -556,6 +556,7 @@ class RescueTeamsListView(ListView):
     model = RescueTeam
     context_object_name = "rescue_team_list"
     template_name = "flood_relief_center/rescue_team.html"
+    pk_url_kwarg = 'centerID'
 
     def get_search_query(self, queryset, search_query):
         if search_query:
@@ -602,38 +603,18 @@ class RescueTeamsListView(ListView):
         context["volunteer_list"] = Volunteer.objects.all()
         context["task_type_list"] = get_task_type()
         centerID = self.kwargs.get('centerID')
+        context["centerID"] = centerID
         return context
 
-    # def get_queryset(self):
-    # # Filter by centerID
-    #     return RescueTeam.objects.filter(center_id=self.kwargs.get('centerID'))
 
-
-# def edit_affected_area(request, areaID):
-#     area = AffectedArea.objects.get(areaID=areaID)
-#     form = AffectedAreaForm(instance=area)
-#     if request.method == 'POST':
-#         form = AffectedAreaForm(request.POST, instance=area)
-#         if form.is_valid():
-#             form.save()
-#             return redirect(reverse("flood-relief-center:affected-areas"))
-#     context = {"form": form}
-#     return render(request, "flood_relief_center/edit_affected_area.html", context)
-
-
-def add_rescue_team(request):
+def add_rescue_team(request, centerID):
     form = RescueTeamForm()
     if request.method == 'POST':
         form = RescueTeamForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:rescue-teams"))
-    context = {"form": form}
+            return redirect(reverse("flood-relief-center:rescue-teams", kwargs={'centerID': centerID}))
+    context = {"form": form, "centerID": centerID}
 
     return render(request, "flood_relief_center/add_rescue_team.html", context)
 
-
-# def delete_affected_area(request, teamID):
-#     area = RescueTeam.objects.get(teamID=teamID)
-#     area.delete()
-#     return redirect(reverse("flood-relief-center:affected-areas"))

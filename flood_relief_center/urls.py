@@ -35,7 +35,7 @@ urlpatterns = [
 
     
     path("rescue-teams/<int:centerID>/", views.RescueTeamsListView.as_view(), name="rescue-teams"),
-    path("add-rescue_team/",views.add_rescue_team, name="add-rescue-teams" )
+    path("add-rescue-team/<int:centerID>/",views.add_rescue_team, name="add-rescue-teams" )
 
 ]
 
