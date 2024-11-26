@@ -22,21 +22,20 @@
 <!--      <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border: 0px; font-size: 20px;" href="{% url 'flood-relief-center:add-relief-center' %}" role="button">Add</a>-->
 <!--    </div>-->
 
-    <div class="container d-flex justify-content-between align-items-center" style="width: 100%; padding-left: 0; margin-bottom: 20px;">
-      <h1>Flood Relief Centers</h1>
-    </div>
-
-    <div class="input-group" style="display: flex; align-items: center;">
-      <input type="text" class="form-control" name="search_query" value = "" placeholder="Search..." style="border-radius: 0; width: auto; margin-right: 10px;">
-
-      <span class="input-group-btn">
-        <button class="btn btn-primary" type="submit">
-          <i class="fa fa-search"></i> Search
-        </button>
-      </span>
-
-      <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border: none; font-size: 20px; margin-left: 10px;" href="{% url 'flood-relief-center:add-relief-center' %}" role="button">Add</a>
-    </div>
+        <div class="container d-flex justify-content-between align-items-center" style="width: 100%; padding-left: 0; margin-bottom: 20px;">
+            <h1 style="margin: 0;">Flood Relief Centers</h1> <!-- Remove default margin -->
+        </div>
+        <div class="d-flex align-items-center"> <!-- New flex container for search and add button -->
+            <form class="input-group" style="display: flex; align-items: center;">
+                <input type="text" class="form-control" name="search_query" value="" placeholder="Search..." style="border-radius: 0; margin-right: 10px;">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                </span>
+            </form>
+            <a class="btn btn-add" style="background-color: rgb(126, 200, 118); color: white; border: none; font-size: 20px; margin-left: 10px;" href="{% url 'flood-relief-center:add-relief-center' %}" role="button">Add</a>
+        </div>
 
 
 

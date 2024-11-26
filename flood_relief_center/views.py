@@ -38,7 +38,7 @@ class ReliefCentersListView(ListView):
     def get_search_query(self, queryset, search_query):
         if search_query:
             queryset = queryset.filter(Q(name__icontains=search_query) |
-                                       Q(Location__icontains=search_query))
+                                       Q(location__icontains=search_query))
         return queryset
 
     def get_queryset(self):
