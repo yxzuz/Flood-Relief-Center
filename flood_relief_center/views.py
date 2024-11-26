@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db.models import Count, Sum, Q, Max, Min
 from django.db.models.functions import Lower
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm, ReliefCenterForm, RescueTeamForm, VolunteerForm
 from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Finance, RescueTeam, Member, Volunteer, RescueTeam
 
@@ -39,8 +39,8 @@ def index(request):
     return render(request, "flood_relief_center/index.html")
 
 
-def get_team_name():
-    return [team.teamName for team in RescueTeam.objects.all()]
+def get_team_name(centerID):
+    return [team.teamName for team in RescueTeam.objects.filter(center__centerID=centerID)]
 
 
 class ReliefCentersListView(ListView):
@@ -119,8 +119,7 @@ class DonationListView(ListView):
             queryset = queryset.filter(amount__gte=amount_min)
         if amount_max:
             queryset = queryset.filter(amount__lte=amount_max)
-        # print(queryset)
-        # return queryset
+
         if ordered_by == "donorName":
             queryset = queryset.annotate(lower_name=Lower(
                 "donorName")).order_by("lower_name")
@@ -266,7 +265,7 @@ class StatsVictim(ListView):
         aid_packages_data_dict = {status[0]: 0 for status in STATUS}
         for entry in aid_packages_data:
             aid_packages_data_dict[entry['currentStatus']] = entry['count']
-        print(aid_packages_data)
+        # print(aid_packages_data)
         return aid_packages_data
 
     def risk_level_data(self):
@@ -275,17 +274,17 @@ class StatsVictim(ListView):
         risk_level_data_dict = {level[0]: 0 for level in RISK_LEVEL}
         for entry in risk_level_data:
             risk_level_data_dict[entry['riskLevel']] = entry['count']
-        print(risk_level_data)
+        # print(risk_level_data)
         return risk_level_data
 
     def needs_data(self):
         needs_data = Victim.objects.values(
             'needs__name').annotate(count=Count('victimID'))
-        print("Needs data", needs_data)
+        # print("Needs data", needs_data)
         needs_data_dict = {level[1]: 0 for level in NEEDS_CHOICES}
         for entry in needs_data:
             needs_data_dict[entry['needs__name']] = entry['count']
-        print(needs_data)
+        # print(needs_data)
         return needs_data
 
     def get_context_data(self, **kwargs):
@@ -384,16 +383,17 @@ def delete_affected_area(request, areaID):
     return redirect(reverse("flood-relief-center:affected-areas"))
 
 
-class ReliefCenterDetailView(ListView):
+class ReliefCenterDetailView(DetailView):
     model = ReliefCenter
     context_object_name = "relief_center_detail"
     template_name = "flood_relief_center/relief_center_detail.html"
+    pk_url_kwarg = 'centerID'
 
     def financial_status_data(self):
         center_id = self.kwargs.get('centerID')
         financial_status_data = Finance.objects.filter(center__centerID=center_id).values(
             'finance_type').annotate(total_amount=Sum('amount'))
-        print(financial_status_data)
+        # print(financial_status_data)
         return financial_status_data
 
     def max_min_financial_data(self):
@@ -410,13 +410,18 @@ class ReliefCenterDetailView(ListView):
             expense_min=Min('amount', filter=Q(finance_type='expense'))
         )
 
-        print("Filtered financial data:", max_min_data)
+        # print("Filtered financial data:", max_min_data)
         return max_min_data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        center = self.object  # The specific `ReliefCenter` object
         context["financial_status_data"] = self.financial_status_data()
         context["max_min_financial_data"] = self.max_min_financial_data()
+        context["centerID"] = center.centerID  # self.kwargs.get('centerID')
+        # print(context["relief_center_detail"])
+        # context["relief_center_detail"].first().name
+        context["centerName"] = center.name
 
         return context
 
@@ -429,13 +434,15 @@ class VolunteersListView(ListView):
     model = Volunteer
     context_object_name = "volunteer_list"
     template_name = "flood_relief_center/volunteers.html"
+    pk_url_kwarg = 'centerID'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context["centers"] = CENTER
+        centerID = self.kwargs.get('centerID')
         context["position"] = POSITION
         context["avaliability_status"] = AVALIABILITY_STATUS
-        context["teams"] = get_team_name()
+        context["teams"] = get_team_name(centerID)
+        # context["volunteers"] = Volunteer.objects.filter(team__center__centerID=centerID)
         return context
 
     def get_search_query(self, queryset, search_query):
@@ -454,16 +461,18 @@ class VolunteersListView(ListView):
         selected_avaliability_status = self.request.GET.get(
             "selected_availability_status", "")
         selected_team_name = self.request.GET.get("selected_team_name", "")
+        ordered_by = self.request.GET.get("orderparam", "name")
 
         print("searchq", search_query)
         print("elect", selected_position)
         print("ava", selected_avaliability_status)
         print("team", selected_team_name)
-        queryset = (Volunteer.objects.all())
+        queryset = (Volunteer.objects.filter(team__center__centerID=centerID))
 
         # Apply search filter
         if search_query:
             queryset = self.get_search_query(queryset, search_query)
+            print("queryset", queryset)
 
         # Apply position filter
         if selected_position:
@@ -479,7 +488,7 @@ class VolunteersListView(ListView):
         if selected_team_name:
             queryset = queryset.filter(team__teamName=selected_team_name)
 
-        print(queryset)
+        print("queryset", queryset)
         return queryset
 
 
@@ -515,10 +524,8 @@ def delete_volunteer(request, volunteerID):
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     volunteer.delete()
     return redirect(reverse("flood-relief-center:volunteers"))
-  
-  
-  
-  
+
+
 class RescueTeamsListView(ListView):
     model = RescueTeam
     context_object_name = "rescue_team_list"
@@ -573,6 +580,9 @@ class RescueTeamsListView(ListView):
         context["center_list"] = get_center_names()
         return context
 
+    def get_queryset(self):
+    # Filter by centerID
+        return RescueTeam.objects.filter(center_id=self.kwargs.get('centerID'))
 
 
 # def edit_affected_area(request, areaID):

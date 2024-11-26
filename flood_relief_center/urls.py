@@ -23,7 +23,7 @@ urlpatterns = [
     path("delete-victim/<int:victimID>/", views.delete_victim, name="delete-victim"),
     path("stats-victims/", views.StatsVictim.as_view(), name="stats-victims"),
 
-    path("volunteers/", views.VolunteersListView.as_view(), name="volunteers"),
+    path("volunteers/<int:centerID>/", views.VolunteersListView.as_view(), name="volunteers"),
     path("edit-volunteer/<int:volunteerID>/", views.edit_volunteer, name="edit-volunteer"),
     path("add-volunteer/", views.add_volunteer, name="add-volunteer"),
     path("delete-volunteer/<int:volunteerID>/", views.delete_volunteer, name="delete-volunteer"),
@@ -34,7 +34,7 @@ urlpatterns = [
     path("delete-affected-area/<int:areaID>/", views.delete_affected_area, name="delete-affected-area"),
 
     
-    path("rescue-teams/", views.RescueTeamsListView.as_view(), name="rescue-teams"),
+    path("rescue-teams/<int:centerID>/", views.RescueTeamsListView.as_view(), name="rescue-teams"),
     path("add-rescue_team/",views.add_rescue_team, name="add-rescue-teams" )
 
 ]

@@ -75,31 +75,13 @@
                                             </span>
                                     </div>
 
-<!--                                        {% for center in relief_center_detail %} <form method="GET" action="{% url 'flood-relief-center:edit-volunteers' %}">{% endfor %}-->
-<!--                                            <div class="input-group">-->
-<!--                                                <input type="text" class="form-control" name="search_query" placeholder="Search volunteers..." value="">-->
-<!--                                                <span class="input-group-btn">-->
-<!--                                                    <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i> Search</button>-->
-<!--                                                </span>-->
-<!--                                            </div>-->
-<!--                                        </form> &lt;!&ndash; Close form here &ndash;&gt;-->
-<!--                                    </div>-->
 
                                     <p></p>
                                     <p>Showing all results of query</p>
 <!--                                    <div class="padding"></div>-->
                                     <!-- BEGIN VOLUNTEER RESULT BUT STILL VICTIM-->
                                     <div class="row">
-                                        <div class="col-sm-2">
-                                            <label for="orderparam" class="mt-3">Order by:</label>
-                                                <select id="orderparam" name="orderparam" class="form-control">
-                                                    <option value="volunteerID" {% if orderparam == 'volunteerID' %}selected{% endif %}>Volunteer ID</option>
-                                                    <option value="name" {% if orderparam == 'name' %}selected{% endif %}>Name</option>
-                                                    <option value="position" {% if orderparam == 'position' %}selected{% endif %}>Position</option>
-                                                    <option value="availabilityStatus" {% if orderparam == 'availabilityStatus' %}selected{% endif %}>Avaliability Status</option>
-                                                    <option value="team_id" {% if orderparam == 'team_id' %}selected{% endif %}>Team ID</option>
-                                                </select>
-                                        </div>
+     
 
 
                                         <div class="col-md-6 text-right">

@@ -75,9 +75,9 @@ $(document).ready(function(){
     <div class="jumbotron">
         <div class="container">
             <div class="display-3">
-                {% for center in relief_center_detail %}
-                    {{center.name}}
-                {% endfor %}</h1>
+                <h1>
+                    {{centerName}}
+              </h1>
             </div>
             <p>Relief centers are vital in supporting flood-affected communities by providing essential services and resources.
                 They serve as hubs for distributing food, medical care, and shelter, ensuring that those displaced receive immediate assistance.
@@ -96,18 +96,16 @@ $(document).ready(function(){
             <div class="col-md-4">
 
                 <h2>Volunteer</h2>
-                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
-                    mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
-                    mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:volunteers' center.centerID %}" role="button">View details &raquo;</a></p>
+                <p>Volunteers dedicated to making a positive impact in the community. </p>
+                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:volunteers' centerID %}" role="button">View details &raquo;</a></p>
+
             </div>
             <div class="col-md-4">
                 <h2>Rescue teams</h2>
 
-                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                    porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
-                    ut fermentum massa justo sit amet risus.</p>
-                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:rescue-teams' %}" role="button">View details &raquo;</a></p>
+                <p>Rescue teams in action, providing crucial support when it matters most.</p>
+         
+                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:rescue-teams' centerID  %}" role="button">View details &raquo;</a></p>
             </div>
         </div>
 
@@ -118,9 +116,9 @@ $(document).ready(function(){
         <div style="border:solid rgb(119, 149, 182);margin-top: 20px; background-color:aliceblue; text-align: center; display:flex; justify-content:space-evenly; align-items:center;">
             <div class="chart-container" style="display:inline-block; text-align: center; ">
                 <p>Finance tracking of                 
-                    {% for center in relief_center_detail %}
+                   
                     {{center.name}}
-                {% endfor %}</p>
+             </p>
           
                 <canvas id="chart" width="400" height="300"></canvas>
             </div>
