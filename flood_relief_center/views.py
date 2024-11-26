@@ -3,28 +3,36 @@ from django.views.generic import ListView
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.db.models import Count
+from django.db.models import Count, Sum, Q, Max, Min
 from django.db.models.functions import Lower
 from django.views.generic import ListView
-from django.db.models import Q
-from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm, VolunteerForm
-from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Volunteer, RescueTeam
+from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm, ReliefCenterForm, RescueTeamForm, VolunteerForm
+from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Finance, RescueTeam, Member, Volunteer, RescueTeam
 
 # Create your views here.
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
+
 POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
 AVALIABILITY_STATUS = [('available', 'Available'),
                        ('unavailable', 'Unavailable')]
-DONATION_TYPE = [('money', 'Money'), ('supplies',
-                                      'Supplies'), ('other', 'Other')]
+
+DONATION_TYPE = [('money', 'Money'), ('supplies', 'Supplies'),
+                 ('medical', 'Medical'), ('relief', 'Relief')]
+
 DAMAGE_LEVEL = [('minor', 'Minor'), ('moderate',
                                      'Moderate'), ('severe', 'Severe')]
+FINANCE_TYPE = [('donation', 'Donation'),
+                ('grant', 'Grant'), ('expense', 'Expense')]
 
 
 def get_center_names():
     return [center.name for center in ReliefCenter.objects.all()]
+
+
+def get_task_type():
+    return [task.taskType for task in RescueTeam.objects.all()]
 
 
 def index(request):
@@ -85,7 +93,7 @@ class DonationListView(ListView):
     def get_search_query(self, queryset, search_query):
         if search_query:
             queryset = queryset.filter(Q(donorName__icontains=search_query) | Q(
-                donation_type__icontains=search_query) | Q(package__aid_type__icontains=search_query))
+                donation_type__icontains=search_query))
         return queryset
 
     def get_queryset(self):
@@ -131,7 +139,7 @@ def edit_donation(request, donationID):
             form.save()
             return redirect(reverse("flood-relief-center:donations"))
     context = {"form": form}
-    return render(request, "flood_relief_center/edit_victim.html", context)
+    return render(request, "flood_relief_center/edit_donation.html", context)
 
 
 def delete_donation(request, donationID):
@@ -176,7 +184,7 @@ class VictimsListView(ListView):
 
         # Get the query parameters from the request
         search_query = self.request.GET.get("search_query", "")
-        selected_donation = self.request.GET.get("selected_donation", "")
+        selected_center = self.request.GET.get("selected_center", "")
         selected_status = self.request.GET.get("selected_status", "")
         selected_risk_level = self.request.GET.get("selected_risk_level", "")
 
@@ -194,8 +202,8 @@ class VictimsListView(ListView):
             queryset = self.get_search_query(queryset, search_query)
 
         # Apply center filter
-        if selected_donation:
-            queryset = queryset.filter(center__name=selected_donation)
+        if selected_center:
+            queryset = queryset.filter(center__name=selected_center)
 
         # Apply status filter
         if selected_status:
@@ -381,6 +389,37 @@ class ReliefCenterDetailView(ListView):
     context_object_name = "relief_center_detail"
     template_name = "flood_relief_center/relief_center_detail.html"
 
+    def financial_status_data(self):
+        center_id = self.kwargs.get('centerID')
+        financial_status_data = Finance.objects.filter(center__centerID=center_id).values(
+            'finance_type').annotate(total_amount=Sum('amount'))
+        print(financial_status_data)
+        return financial_status_data
+
+    def max_min_financial_data(self):
+        center_id = self.kwargs.get('centerID')
+
+        # Aggregate maximum and minimum amounts for the given center
+        max_min_data = Finance.objects.filter(center__centerID=center_id).values(
+            'finance_type').aggregate(
+            donation_max=Max('amount', filter=Q(finance_type='donation')),
+            donation_min=Min('amount', filter=Q(finance_type='donation')),
+            grant_max=Max('amount', filter=Q(finance_type='grant')),
+            grant_min=Min('amount', filter=Q(finance_type='grant')),
+            expense_max=Max('amount', filter=Q(finance_type='expense')),
+            expense_min=Min('amount', filter=Q(finance_type='expense'))
+        )
+
+        print("Filtered financial data:", max_min_data)
+        return max_min_data
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["financial_status_data"] = self.financial_status_data()
+        context["max_min_financial_data"] = self.max_min_financial_data()
+
+        return context
+
     def get_queryset(self):
         # Filter by centerID
         return ReliefCenter.objects.filter(centerID=self.kwargs.get('centerID'))
@@ -476,3 +515,91 @@ def delete_volunteer(request, volunteerID):
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     volunteer.delete()
     return redirect(reverse("flood-relief-center:volunteers"))
+  
+  
+  
+  
+class RescueTeamsListView(ListView):
+    model = RescueTeam
+    context_object_name = "rescue_team_list"
+    template_name = "flood_relief_center/rescue_team.html"
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(teamName__icontains=search_query) | Q(
+                taskType__icontains=search_query)  # | Q(center__name__icontains=search_query)
+            )
+
+        return queryset
+
+    def get_queryset(self):
+        queryset = RescueTeam.objects.all()
+
+        # Get the query parameters from the request
+        search_query = self.request.GET.get("search_query", "")
+        selected_task_type = self.request.GET.get("selected_task_type", "")
+        selected_center = self.request.GET.get("selected_center", "")
+
+        ordered_by = self.request.GET.get("orderparam", "teamName")
+
+        # print("search_query", search_query)
+        print("ordered_by", ordered_by)
+
+        # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+
+        # # Apply center filter
+        if selected_task_type:
+            queryset = queryset.filter(taskType=selected_task_type)
+
+        # # Apply status filter
+        if selected_center:
+            queryset = queryset.filter(center__name=selected_center)
+
+        if ordered_by == "teamName":
+            queryset = queryset.annotate(lower_name=Lower(
+                "teamName")).order_by("lower_name")
+        else:
+            queryset = queryset.order_by(ordered_by)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["leader_list"] = Member.objects.all()
+        context["volunteer_list"] = Volunteer.objects.all()
+        context["task_type_list"] = get_task_type()
+        context["center_list"] = get_center_names()
+        return context
+
+
+
+# def edit_affected_area(request, areaID):
+#     area = AffectedArea.objects.get(areaID=areaID)
+#     form = AffectedAreaForm(instance=area)
+#     if request.method == 'POST':
+#         form = AffectedAreaForm(request.POST, instance=area)
+#         if form.is_valid():
+#             form.save()
+#             return redirect(reverse("flood-relief-center:affected-areas"))
+#     context = {"form": form}
+#     return render(request, "flood_relief_center/edit_affected_area.html", context)
+
+
+def add_rescue_team(request):
+    form = RescueTeamForm()
+    if request.method == 'POST':
+        form = RescueTeamForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:rescue-teams"))
+    context = {"form": form}
+
+    return render(request, "flood_relief_center/add_rescue_team.html", context)
+
+
+# def delete_affected_area(request, teamID):
+#     area = RescueTeam.objects.get(teamID=teamID)
+#     area.delete()
+#     return redirect(reverse("flood-relief-center:affected-areas"))

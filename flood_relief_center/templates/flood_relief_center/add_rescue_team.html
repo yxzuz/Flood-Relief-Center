@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
-{% block title %} Edit Donation {% endblock %}
+{% block title %} Add Rescue Teams {% endblock %}
 
 {% block content %}
-
+<br/>
 <div class="container mt-5">
-    <br/>
-    <br/>
-    <br/>
-    <h2 class="text-center">Edit Donation</h2>
-    
-    <form method="POST" action="" class="mt-4">
+    <h2 class="text-center">Add Rescue Teams</h2>
+    <form method="POST" action="{% url 'flood-relief-center:add-rescue-teams' %}" class="mt-4">
         {% csrf_token %}
         
         <!-- Loop through form fields and render each one in a separate row -->
@@ -25,9 +21,6 @@
                 {% endif %}
             </div>
         {% endfor %}
-
-
- 
         
         <!-- Submit button -->
         <button type="submit" class="btn btn-success btn-block mt-3">Submit</button>
