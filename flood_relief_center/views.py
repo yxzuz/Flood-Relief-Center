@@ -465,6 +465,7 @@ class VolunteersListView(ListView):
         context["position"] = POSITION
         context["avaliability_status"] = AVALIABILITY_STATUS
         context["teams"] = get_team_name(centerID)
+        context["centerID"] = centerID
         # context["volunteers"] = Volunteer.objects.filter(team__center__centerID=centerID)
         return context
 
@@ -530,16 +531,18 @@ def edit_volunteer(request, volunteerID):
     return render(request, "flood_relief_center/edit_volunteer.html", context)
 
 
-def add_volunteer(request):
+def add_volunteer(request, centerID):
     form = VolunteerForm()
+    print("addcenterID", centerID)
     if request.method == 'POST':
         # print(request.POST)                                                               ~
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:volunteers"))
+            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': centerID}))
 
-    context = {"form": form}
+
+    context = {"form": form, "centerID": centerID}
     return render(request, "flood_relief_center/add_volunteer.html", context)
 
 
@@ -563,6 +566,7 @@ class RescueTeamsListView(ListView):
         return queryset
 
     def get_queryset(self):
+        centerID = self.kwargs.get('centerID')
         queryset = RescueTeam.objects.all()
 
         # Get the query parameters from the request
@@ -600,7 +604,7 @@ class RescueTeamsListView(ListView):
         context["leader_list"] = Member.objects.all()
         context["volunteer_list"] = Volunteer.objects.all()
         context["task_type_list"] = get_task_type()
-        context["center_list"] = get_center_names()
+        centerID = self.kwargs.get('centerID')
         return context
 
     def get_queryset(self):

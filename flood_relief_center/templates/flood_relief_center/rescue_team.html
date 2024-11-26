@@ -41,14 +41,6 @@
                   
                 
                 <div class="container" style="padding: 0%;">
-                    <label for="center">Relief Center:</label>
-                    <select id="center" name="selected_center" class="form-control">
-                        <!-- Null option at the top -->
-                        <option value="" selected disabled>Select Center</option>
-                        {% for center in center_list %}
-                        <option value="{{ center }}">{{ center }}</option>
-                        {% endfor %}
-                    </select>
                 
                     <label for="taskType" class="mt-3">Task type:</label>
                     <select id="taskType" name="selected_task_type" class="form-control">

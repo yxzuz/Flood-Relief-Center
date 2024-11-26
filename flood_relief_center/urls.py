@@ -25,7 +25,7 @@ urlpatterns = [
 
     path("volunteers/<int:centerID>/", views.VolunteersListView.as_view(), name="volunteers"),
     path("edit-volunteer/<int:volunteerID>/", views.edit_volunteer, name="edit-volunteer"),
-    path("add-volunteer/", views.add_volunteer, name="add-volunteer"),
+    path("add-volunteer/<int:centerID>", views.add_volunteer, name="add-volunteer"),
     path("delete-volunteer/<int:volunteerID>/", views.delete_volunteer, name="delete-volunteer"),
 
     path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas"),
