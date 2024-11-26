@@ -1,17 +1,26 @@
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db.models import Count, Sum, Q, Max, Min
 from django.db.models.functions import Lower
 from django.views.generic import ListView
-from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm, ReliefCenterForm, RescueTeamForm
-from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Finance, RescueTeam, Member, Volunteer
+from .forms import VictimForm, DonationForm, AffectedAreaForm, ReliefCenterForm, ReliefCenterForm, RescueTeamForm, VolunteerForm
+from .models import ReliefCenter, Donation, Victim, AffectedArea, NEEDS_CHOICES, Finance, RescueTeam, Member, Volunteer, RescueTeam
 
 # Create your views here.
 STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
+
+POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
+AVALIABILITY_STATUS = [('available', 'Available'),
+                       ('unavailable', 'Unavailable')]
+
 DONATION_TYPE = [('money', 'Money'), ('supplies', 'Supplies'),
                  ('medical', 'Medical'), ('relief', 'Relief')]
+
 DAMAGE_LEVEL = [('minor', 'Minor'), ('moderate',
                                      'Moderate'), ('severe', 'Severe')]
 FINANCE_TYPE = [('donation', 'Donation'),
@@ -28,6 +37,10 @@ def get_task_type():
 
 def index(request):
     return render(request, "flood_relief_center/index.html")
+
+
+def get_team_name():
+    return [team.teamName for team in RescueTeam.objects.all()]
 
 
 class ReliefCentersListView(ListView):
@@ -160,8 +173,10 @@ class VictimsListView(ListView):
 
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(name__icontains=search_query) | Q(victimNumber__icontains=search_query) | Q(address__icontains=search_query) | Q(
-                center__name__icontains=search_query) | Q(riskLevel__icontains=search_query) | Q(currentStatus__icontains=search_query))
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(victimNumber__icontains=search_query) | Q
+                                       (address__icontains=search_query) | Q(
+                center__name__icontains=search_query) | Q(riskLevel__icontains=search_query) | Q
+                (currentStatus__icontains=search_query))
         return queryset
 
     def get_queryset(self):
@@ -410,6 +425,100 @@ class ReliefCenterDetailView(ListView):
         return ReliefCenter.objects.filter(centerID=self.kwargs.get('centerID'))
 
 
+class VolunteersListView(ListView):
+    model = Volunteer
+    context_object_name = "volunteer_list"
+    template_name = "flood_relief_center/volunteers.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # context["centers"] = CENTER
+        context["position"] = POSITION
+        context["avaliability_status"] = AVALIABILITY_STATUS
+        context["teams"] = get_team_name()
+        return context
+
+    def get_search_query(self, queryset, search_query):
+        if search_query:
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(position__icontains=search_query) | Q(team__teamName__icontains=search_query) |
+                                       Q(availabilityStatus__icontains=search_query))
+
+        return queryset
+
+    def get_queryset(self):
+
+        # Get the query parameters from the request
+        centerID = self.kwargs.get('centerID')
+        search_query = self.request.GET.get("search_query", "")
+        selected_position = self.request.GET.get("selected_position", "")
+        selected_avaliability_status = self.request.GET.get(
+            "selected_availability_status", "")
+        selected_team_name = self.request.GET.get("selected_team_name", "")
+
+        print("searchq", search_query)
+        print("elect", selected_position)
+        print("ava", selected_avaliability_status)
+        print("team", selected_team_name)
+        queryset = (Volunteer.objects.all())
+
+        # Apply search filter
+        if search_query:
+            queryset = self.get_search_query(queryset, search_query)
+
+        # Apply position filter
+        if selected_position:
+            queryset = queryset.filter(position=selected_position)
+
+        # Apply avaliability status filter
+        if selected_avaliability_status:
+            queryset = queryset.filter(
+                availabilityStatus=selected_avaliability_status)
+
+        # Apply team id status filter
+
+        if selected_team_name:
+            queryset = queryset.filter(team__teamName=selected_team_name)
+
+        print(queryset)
+        return queryset
+
+
+def edit_volunteer(request, volunteerID):
+    # Retrieve the volunteer instance based on the provided ID
+    volunteer = Volunteer.objects.get(volunteerID=volunteerID)
+    form = VolunteerForm(instance=volunteer)
+
+    if request.method == 'POST':
+        form = VolunteerForm(request.POST, instance=volunteer)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:volunteers"))
+
+    context = {"form": form}
+    return render(request, "flood_relief_center/edit_volunteer.html", context)
+
+
+def add_volunteer(request):
+    form = VolunteerForm()
+    if request.method == 'POST':
+        # print(request.POST)                                                               ~
+        form = VolunteerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:volunteers"))
+
+    context = {"form": form}
+    return render(request, "flood_relief_center/add_volunteer.html", context)
+
+
+def delete_volunteer(request, volunteerID):
+    volunteer = Volunteer.objects.get(volunteerID=volunteerID)
+    volunteer.delete()
+    return redirect(reverse("flood-relief-center:volunteers"))
+  
+  
+  
+  
 class RescueTeamsListView(ListView):
     model = RescueTeam
     context_object_name = "rescue_team_list"

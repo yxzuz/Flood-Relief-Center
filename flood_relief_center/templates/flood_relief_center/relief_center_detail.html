@@ -79,9 +79,12 @@ $(document).ready(function(){
                     {{center.name}}
                 {% endfor %}</h1>
             </div>
-            <p>This is a template for a simple marketing or informational website. It includes a large callout called a
-                jumbotron and three supporting pieces of content. Use it as a starting point to create something more
-                unique.</p>
+            <p>Relief centers are vital in supporting flood-affected communities by providing essential services and resources.
+                They serve as hubs for distributing food, medical care, and shelter, ensuring that those displaced receive immediate assistance.
+                These centers also offer psychological support, helping survivors cope with the emotional toll of the disaster.
+                By coordinating aid efforts and facilitating community recovery, relief centers play a crucial role in restoring hope and stability,
+                empowering individuals to rebuild their lives after devastating floods. Their presence fosters a sense of solidarity and resilience
+                among affected populations, demonstrating that help is available and that recovery is possible.</p>
             <p><a class="btn btn-primary btn-lg" href="{% url 'flood-relief-center:relief-centers' %}" role="button">Learn more &raquo;</a></p>
         </div>
     </div>
@@ -91,14 +94,16 @@ $(document).ready(function(){
         <div class="row">
 
             <div class="col-md-4">
+
                 <h2>Volunteer</h2>
                 <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor
                     mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna
                     mollis euismod. Donec sed odio dui. </p>
-                <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
+                <p><a class="btn btn-secondary" href="{% url 'flood-relief-center:volunteers' center.centerID %}" role="button">View details &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>Rescue teams</h2>
+
                 <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
                     porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh,
                     ut fermentum massa justo sit amet risus.</p>
