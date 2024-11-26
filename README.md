@@ -1,5 +1,10 @@
 # Flood-Relief-Center
 
+## Create superuser
+```
+python manage.py createsuperuser
+```
+
 | Username | Password  |
 | -------- | --------- |
 | admin    | admin1234 |
@@ -31,17 +36,21 @@
     ```
     pip install -r requirements.txt
     ```
-
 7. Run Migrations
+    ```
+    python manage.py makemigrations
+    ```
+
+8. Run Migrations
     ```
     python manage.py migrate
     ```
-8. Load fixture data
+9. Load fixture data
     ```
-    python manage.py loaddata data/data-v1.json
+    python manage.py loaddata data/flood_data.json
     ```
-9. Run server
+10. Run server
     ```
     python manage.py runserver
     ```
-10. Access the server on your browser http://127.0.0.1:8000/
+11. Access the server on your browser http://127.0.0.1:8000/
