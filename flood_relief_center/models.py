@@ -60,7 +60,7 @@ class RescueTeam(models.Model):
     teamID = models.AutoField(primary_key=True)
     teamName = models.CharField(max_length=100)
     taskType = models.CharField(max_length=100)
-    area = models.ForeignKey(AffectedArea, on_delete=models.SET_NULL, null=True)
+    center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.teamName
@@ -70,7 +70,7 @@ class Victim(models.Model):
     name = models.CharField(max_length=100)
     age = models.PositiveIntegerField()
     address = models.TextField()
-    familyMembers = models.PositiveIntegerField()
+    familyMembers = models.PositiveIntegerField() 
     needs = models.ManyToManyField(Need)  # Link to multiple Needs
     currentStatus = models.CharField(max_length=50,choices=[('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')])
     center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
@@ -98,7 +98,6 @@ class Volunteer(models.Model):
     position = models.CharField(max_length=30, choices=[('staff', 'Staff'), ('volunteer', 'Volunteer')])
     availabilityStatus = models.CharField(max_length=50, choices=[('available', 'Available'), ('unavailable', 'Unavailable')])
     team = models.ForeignKey(RescueTeam, on_delete=models.SET_NULL, null=True)
-    center = models.ForeignKey(ReliefCenter, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -106,9 +105,8 @@ class Volunteer(models.Model):
 class Donation(models.Model):
     donationID = models.AutoField(primary_key=True)
     donorName = models.CharField(max_length=100)
-    donation_type = models.CharField(max_length=50, choices=[('money', 'Money'), ('supplies', 'Supplies'), ('other', 'Other')],null=True,blank=True)
+    donation_type = models.CharField(max_length=50, choices=[('money', 'Money'), ('supplies', 'Supplies'), ('medical', 'Medical'), ('relief', 'Relief')],null=True,blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    package = models.ForeignKey(AidPackage, on_delete=models.SET_NULL, null=True, blank=True)
     donationDate = models.DateField()
 
     def clean(self):

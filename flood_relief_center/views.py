@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect
 
+from django.urls import reverse
 from django.views.generic import ListView
 from django.db.models import Q
-from .models import ReliefCenter, Donation, Victim, AffectedArea, Volunteer
+from .models import ReliefCenter, Donation, Victim, AffectedArea, Volunteer, RescueTeam
+from .forms import VolunteerForm
 
 # Create your views here.
 CENTER = [center.name for center in ReliefCenter.objects.all()]
@@ -10,11 +12,15 @@ STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
 POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
-AVALIABILITY_STATUS = ['Available', 'Unavaliable']
-TEAM_ID = ['1', '2', '3', '4', '5']
+AVALIABILITY_STATUS = ['available', 'unavailable']
+
 
 def index(request):
     return render(request, "flood_relief_center/index.html")
+
+
+def get_team_name():
+    return [team.teamName for team in RescueTeam.objects.all()]
 
 
 class ReliefCentersListView(ListView):
@@ -107,13 +113,12 @@ class VolunteersListView(ListView):
         # context["centers"] = CENTER
         context["position"] = POSITION
         context["avaliability_status"] = AVALIABILITY_STATUS
-        context["teamID"] = TEAM_ID
+        context["teams"] = get_team_name()
         return context
 
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(name__icontains=search_query) | Q(volunteersID__icontains=search_query) | Q(position__icontains=search_query) | Q(
-                center__name__icontains=search_query) | Q(availabilityStatus__icontains=search_query) | Q(teamID__icontains=search_query))
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(position__icontains=search_query)  | Q(team__teamName__icontains=search_query))
         return queryset
 
     def get_queryset(self):
@@ -122,15 +127,17 @@ class VolunteersListView(ListView):
         # fixed_center_id = self.kwargs.get("centerID")
         search_query = self.request.GET.get("search_query", "")
         selected_position = self.request.GET.get("selected_position", "")
-        selected_avaliability_status = self.request.GET.get("selected_availability_status", "")
-        selected_team_id = self.request.GET.get("selected_teamID", "")
+        selected_avaliability_status = self.request.GET.get(
+            "selected_availability_status", "")
+        selected_team_name = self.request.GET.get("selected_team_name", "")
         ordered_by = self.request.GET.get("orderparam", "name")
         # age_range = self.request.GET.get("age_range", None)
-        
-        print("searchq",search_query)
-        print("elect",selected_position)
+
+        print("searchq", search_query)
+        print("elect", selected_position)
+        print("ava", selected_avaliability_status)
+        print("team", selected_team_name)
         queryset = (Volunteer.objects.all())
-                    # .filter(center__centerID=fixed_center_id))
 
         # Apply search filter
         if search_query:
@@ -142,15 +149,23 @@ class VolunteersListView(ListView):
 
         # Apply avaliability status filter
         if selected_avaliability_status:
-            queryset = queryset.filter(availabilityStatus=selected_avaliability_status)
+            queryset = queryset.filter(
+                availabilityStatus=selected_avaliability_status)
 
         # Apply team id status filter
-        if selected_team_id:
-            queryset = queryset.filter(teamID=selected_team_id)
+        if selected_team_name:
+            queryset = queryset.filter(team__teamName=selected_team_name)
 
         print(queryset)
         return queryset.order_by(ordered_by)
 
 
-
-
+def add_volunteer(request):
+    form = VolunteerForm()
+    if request.method == 'POST':
+        form = VolunteerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse("flood-relief-center:volunteers"))
+    context = {"form": form}
+    return render(request, "flood_relief_center/add_volunteer.html", context)

@@ -10,5 +10,6 @@ urlpatterns = [
     path("relief-centers/<int:centerID>/", views.ReliefCenterDetailView.as_view(), name="relief-center-detail"),
     path("victims/", views.VictimsListView.as_view(), name="victims"),
     path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas"),
-    path('volunteers/', views.VolunteersListView.as_view(), name='volunteers')
+    path('volunteers/', views.VolunteersListView.as_view(), name='volunteers'),
+    path("add-volunteer/", views.add_volunteer, name="add-volunteer"),
 ]
