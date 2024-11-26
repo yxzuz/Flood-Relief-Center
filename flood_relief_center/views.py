@@ -442,25 +442,31 @@ class VolunteersListView(ListView):
 
 
 def edit_volunteer(request, volunteerID):
+    # Retrieve the volunteer instance based on the provided ID
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     form = VolunteerForm(instance=volunteer)
+
     if request.method == 'POST':
         form = VolunteerForm(request.POST, instance=volunteer)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:volunteers"))
+            center_id = volunteer.center.centerID
+            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': center_id}))
+
     context = {"form": form}
     return render(request, "flood_relief_center/edit_volunteer.html", context)
 
 
-def add_volunteer(request):
+def add_volunteer(self, request):
     form = VolunteerForm()
     if request.method == 'POST':
         # print(request.POST)
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:volunteers"))
+            center_id = self.kwargs.get('centerID')
+            return redirect(reverse("flood-relief-center:volunteers",
+                                    kwargs={'centerID': center_id}))
     context = {"form": form}
     return render(request, "flood_relief_center/add_volunteer.html", context)
 
