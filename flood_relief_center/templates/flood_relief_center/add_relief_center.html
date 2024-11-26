@@ -1,16 +1,12 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
-{% block title %} Add Volunteer {% endblock %}
+{% block title %} Add Relief Center {% endblock %}
 
 {% block content %}
 <br/>
 <div class="container mt-5">
-
-    <br/>
-    <br/>
-    <br/>
-    <h2 class="text-center">Add Volunteer</h2>
-    <form method="POST" action="{% url 'flood-relief-center:add-volunteer' center.centerID %}" class="mt-4">
+    <h2 class="text-center">Add Relief Center</h2>
+    <form method="POST" action="{% url 'flood-relief-center:add-relief-center' %}" class="mt-4">
         {% csrf_token %}
         
         <!-- Loop through form fields and render each one in a separate row -->
