@@ -487,16 +487,16 @@ class VolunteersListView(ListView):
         selected_team_name = self.request.GET.get("selected_team_name", "")
         ordered_by = self.request.GET.get("orderparam", "name")
 
-        print("searchq", search_query)
-        print("elect", selected_position)
-        print("ava", selected_avaliability_status)
-        print("team", selected_team_name)
+        # print("searchq", search_query)
+        # print("elect", selected_position)
+        # print("ava", selected_avaliability_status)
+        # print("team", selected_team_name)
         queryset = (Volunteer.objects.filter(team__center__centerID=centerID))
 
         # Apply search filter
         if search_query:
             queryset = self.get_search_query(queryset, search_query)
-            print("queryset", queryset)
+            # print("queryset", queryset)
 
         # Apply position filter
         if selected_position:
@@ -512,7 +512,7 @@ class VolunteersListView(ListView):
         if selected_team_name:
             queryset = queryset.filter(team__teamName=selected_team_name)
 
-        print("queryset", queryset)
+        # print("queryset", queryset)
         return queryset
 
 
@@ -533,7 +533,7 @@ def edit_volunteer(request, volunteerID):
 
 def add_volunteer(request, centerID):
     form = VolunteerForm()
-    print("addcenterID", centerID)
+    # print("addcenterID", centerID)
     if request.method == 'POST':
         # print(request.POST)                                                               ~
         form = VolunteerForm(request.POST)
@@ -567,17 +567,16 @@ class RescueTeamsListView(ListView):
 
     def get_queryset(self):
         centerID = self.kwargs.get('centerID')
-        queryset = RescueTeam.objects.all()
+        queryset = RescueTeam.objects.filter(center_id=self.kwargs.get('centerID'))
 
         # Get the query parameters from the request
         search_query = self.request.GET.get("search_query", "")
         selected_task_type = self.request.GET.get("selected_task_type", "")
-        selected_center = self.request.GET.get("selected_center", "")
 
         ordered_by = self.request.GET.get("orderparam", "teamName")
 
         # print("search_query", search_query)
-        print("ordered_by", ordered_by)
+        # print("ordered_by", ordered_by)
 
         # Apply search filter
         if search_query:
@@ -587,9 +586,7 @@ class RescueTeamsListView(ListView):
         if selected_task_type:
             queryset = queryset.filter(taskType=selected_task_type)
 
-        # # Apply status filter
-        if selected_center:
-            queryset = queryset.filter(center__name=selected_center)
+        # print("55555",selected_task_type)
 
         if ordered_by == "teamName":
             queryset = queryset.annotate(lower_name=Lower(
@@ -607,9 +604,9 @@ class RescueTeamsListView(ListView):
         centerID = self.kwargs.get('centerID')
         return context
 
-    def get_queryset(self):
-    # Filter by centerID
-        return RescueTeam.objects.filter(center_id=self.kwargs.get('centerID'))
+    # def get_queryset(self):
+    # # Filter by centerID
+    #     return RescueTeam.objects.filter(center_id=self.kwargs.get('centerID'))
 
 
 # def edit_affected_area(request, areaID):
