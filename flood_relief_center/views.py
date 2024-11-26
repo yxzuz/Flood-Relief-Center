@@ -15,7 +15,8 @@ STATUS = [('safe', 'Safe'), ('injured', 'Injured'), ('missing', 'Missing')]
 RISK_LEVEL = [(1, 'Low'), (2, 'Moderate'), (3, 'High'),
               (4, 'Critical'), (5, 'Severe')]
 POSITION = [('staff', 'Staff'), ('volunteer', 'Volunteer')]
-AVALIABILITY_STATUS = [('available', 'Available'), ('unavailable', 'Unavailable')]
+AVALIABILITY_STATUS = [('available', 'Available'),
+                       ('unavailable', 'Unavailable')]
 DONATION_TYPE = [('money', 'Money'), ('supplies',
                                       'Supplies'), ('other', 'Other')]
 DAMAGE_LEVEL = [('minor', 'Minor'), ('moderate',
@@ -165,7 +166,7 @@ class VictimsListView(ListView):
     def get_search_query(self, queryset, search_query):
         if search_query:
             queryset = queryset.filter(Q(name__icontains=search_query) | Q(victimNumber__icontains=search_query) | Q
-                (address__icontains=search_query) | Q(
+                                       (address__icontains=search_query) | Q(
                 center__name__icontains=search_query) | Q(riskLevel__icontains=search_query) | Q
                 (currentStatus__icontains=search_query))
         return queryset
@@ -400,8 +401,8 @@ class VolunteersListView(ListView):
 
     def get_search_query(self, queryset, search_query):
         if search_query:
-            queryset = queryset.filter(Q(name__icontains=search_query) | Q(position__icontains=search_query)  | Q(team__teamName__icontains=search_query) |
-            Q(availabilityStatus__icontains=search_query))
+            queryset = queryset.filter(Q(name__icontains=search_query) | Q(position__icontains=search_query) | Q(team__teamName__icontains=search_query) |
+                                       Q(availabilityStatus__icontains=search_query))
 
         return queryset
 
@@ -421,7 +422,6 @@ class VolunteersListView(ListView):
         print("team", selected_team_name)
         queryset = (Volunteer.objects.all())
 
-
         # Apply search filter
         if search_query:
             queryset = self.get_search_query(queryset, search_query)
@@ -440,10 +440,8 @@ class VolunteersListView(ListView):
         if selected_team_name:
             queryset = queryset.filter(team__teamName=selected_team_name)
 
-
         print(queryset)
         return queryset
-
 
 
 def edit_volunteer(request, volunteerID):
@@ -455,28 +453,26 @@ def edit_volunteer(request, volunteerID):
         form = VolunteerForm(request.POST, instance=volunteer)
         if form.is_valid():
             form.save()
-            center_id = volunteer.center.centerID
-            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': center_id}))
+            return redirect(reverse("flood-relief-center:volunteers"))
 
     context = {"form": form}
     return render(request, "flood_relief_center/edit_volunteer.html", context)
 
 
-def add_volunteer(request, center_id):
+def add_volunteer(request):
     form = VolunteerForm()
     if request.method == 'POST':
         # print(request.POST)                                                               ~
         form = VolunteerForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': center_id}))
+            return redirect(reverse("flood-relief-center:volunteers"))
 
-    context = {"form": form, "centerID": center_id}
+    context = {"form": form}
     return render(request, "flood_relief_center/add_volunteer.html", context)
 
 
-def delete_volunteer(volunteerID):
+def delete_volunteer(request, volunteerID):
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     volunteer.delete()
-    return redirect(reverse("flood-relief-center:volunteer"))
-
+    return redirect(reverse("flood-relief-center:volunteers"))

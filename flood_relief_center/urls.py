@@ -23,12 +23,12 @@ urlpatterns = [
     path("delete-victim/<int:victimID>/", views.delete_victim, name="delete-victim"),
     path("stats-victims/", views.StatsVictim.as_view(), name="stats-victims"),
 
-    path("volunteers/<int:centerID>/", views.VolunteersListView.as_view(), name="volunteers"),
+    path("volunteers/", views.VolunteersListView.as_view(), name="volunteers"),
     path("edit-volunteer/<int:volunteerID>/", views.edit_volunteer, name="edit-volunteer"),
-    path("add-volunteer/<int:centerID>/", views.add_volunteer, name="add-volunteer"),
+    path("add-volunteer/", views.add_volunteer, name="add-volunteer"),
     path("delete-volunteer/<int:volunteerID>/", views.delete_volunteer, name="delete-volunteer"),
 
-    path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas")
+    path("affected-areas/", views.AffectedAreaListView.as_view(), name="affected-areas"),
     path("add-affected-area/", views.add_affected_area, name="add-affected-area"),
     path("edit-affected-area/<int:areaID>/", views.edit_affected_area, name="edit-affected-area"),
     path("delete-affected-area/<int:areaID>/", views.delete_affected_area, name="delete-affected-area"),

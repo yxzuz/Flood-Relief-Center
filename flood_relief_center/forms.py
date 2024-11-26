@@ -26,6 +26,4 @@ class AffectedAreaForm(ModelForm):
 class ReliefCenterForm(ModelForm):
     class Meta:
         model = ReliefCenter
-        fields = "__all__"from django import forms
-from django.forms import ModelForm
-from .models import Volunteer
+        fields = "__all__"
