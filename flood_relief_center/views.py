@@ -516,7 +516,7 @@ class VolunteersListView(ListView):
         return queryset
 
 
-def edit_volunteer(request, volunteerID):
+def edit_volunteer(request,centerID, volunteerID):
     # Retrieve the volunteer instance based on the provided ID
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     form = VolunteerForm(instance=volunteer)
@@ -525,7 +525,7 @@ def edit_volunteer(request, volunteerID):
         form = VolunteerForm(request.POST, instance=volunteer)
         if form.is_valid():
             form.save()
-            return redirect(reverse("flood-relief-center:volunteers"))
+            return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': centerID}))
 
     context = {"form": form}
     return render(request, "flood_relief_center/edit_volunteer.html", context)
@@ -546,10 +546,10 @@ def add_volunteer(request, centerID):
     return render(request, "flood_relief_center/add_volunteer.html", context)
 
 
-def delete_volunteer(request, volunteerID):
+def delete_volunteer(request,centerID, volunteerID):
     volunteer = Volunteer.objects.get(volunteerID=volunteerID)
     volunteer.delete()
-    return redirect(reverse("flood-relief-center:volunteers"))
+    return redirect(reverse("flood-relief-center:volunteers", kwargs={'centerID': centerID}))
 
 
 class RescueTeamsListView(ListView):

@@ -132,12 +132,12 @@
 
                                                         <td>
                                                           <a
-                                                          href="{% url 'flood-relief-center:edit-volunteer' volunteer.volunteerID %}"
+                                                          href="{% url 'flood-relief-center:edit-volunteer' volunteer.team.center.centerID volunteer.volunteerID %}"
                                                           style="display: inline-block; background-color: rgb(140, 184, 220); color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;">
                                                           Edit
                                                           </a>
                                                           <a
-                                                            href="{% url 'flood-relief-center:delete-volunteer' volunteer.volunteerID %}"
+                                                            href="{% url 'flood-relief-center:delete-volunteer' volunteer.team.center.centerID volunteer.volunteerID %}"
                                                             style="display: inline-block; background-color: red; color: white; padding: 8px 12px; text-decoration: none; border-radius: 4px; font-size: 14px;"
                                                           >
                                                             Delete
