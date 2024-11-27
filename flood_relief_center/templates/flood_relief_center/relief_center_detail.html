@@ -13,7 +13,7 @@ $(document).ready(function(){
             {% endfor %}    
         ],
         datasets: [{
-            label: 'total number of aid packages',
+            label: 'summation of finance type',
             data: [
                 {% for item in financial_status_data %}
                     "{{ item.total_amount }}",
